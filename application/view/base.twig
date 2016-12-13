@@ -35,6 +35,69 @@
   <body>
 
   <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="{{ makeURL("home","index") }}">WEB</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                  <li><a href="{{ makeURL("home","index") }}">Home</a></li>
+                  {% if session.user is not null%}
+                      {% if session.user.hodnost == 1 %}
+                          <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administrace<span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                  <li><a href="{{ makeURL("user","articles") }}">Správa Příspěvků</a></li>
+                                  <li><a href="{{ makeURL("user","users") }}">Správa uživatelů</a></li>
+                              </ul>
+                          </li>
+                      {% else %}
+                          <li><a href="{{ makeURL("user","index") }}">Administrace</a></li>
+                      {% endif %}
+
+                  {% endif %}
+
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                  {% if session.user is not null %}
+                  <li><a href="">{{  session.user.jmeno }} {{ session.user.prijmeni }}
+                          {% if session.user.hodnost == 3 %}
+                              (Autor)
+                          {% elseif session.user.hodnost == 2 %}
+                              (Recenzent)
+                          {% else %}
+                              (Admin)
+                          {% endif %}
+
+                      </a></li>
+                  <a href="{{ makeURL("user","logout") }}"><button class="btn btn-danger navbar-btn">Odhlásit se</button></a>
+              </ul>
+              {%  else %}
+              <ul class="nav navbar-nav navbar-right">
+                  <form class="navbar-form" action="{{ makeURL("register","login") }}" method="POST">
+                      <div class="form-group .col-xs-6 .col-sm-3">
+                          <a href ="{{ makeURL("register","index") }} " class =".navbar-text">Registrace</a>
+                      </div>
+                      <div class="form-group">
+                          <input type="email" name="visitor[email]" placeholder="Email" class="form-control" required>
+                      </div>
+                          <input type="password" name="visitor[heslo]" placeholder="Heslo" class="form-control" required>
+                      <button type="submit" class="btn btn-success">Přihlásit se</button>
+                  </form>
+                  {% endif %}
+              </ul>
+          </div><!--/.nav-collapse -->
+      </div>
+  </nav>
+
+
+ <!--- <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="#">WEB</a>
@@ -75,7 +138,7 @@
           </ul>
           {% endif %}
     </div>
-  </nav>
+  </nav> ---->
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
@@ -97,7 +160,7 @@
 
 
     <hr>
-
+  <div class="">
       <footer>
         <p>&copy; Jan Jirman</p>
       </footer>

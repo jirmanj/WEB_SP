@@ -37,17 +37,6 @@ class UserController extends Controller
     {
         if(isset($_SESSION['user'])){
             switch($_SESSION['user']['hodnost']){
-                case 1: $article = $this->admin->getAuthorOfArticle();
-                        $reviewers = $this->admin->getReviewers();
-                        $i = 0;
-                        foreach($article as $value){
-                            $review[$i]=$this->admin->getReviews($value);
-                            $i++;
-                        }
-                        echo $this->twig->render('user_summary.twig', ['article' => $article,
-                                                                        'reviewers' => $reviewers,
-                                                                        'review' => $review]);
-                        break;
                 case 2: $pole = $this->reviewer->getYourWork();
                         echo $this->twig->render('user_summary.twig', ['pole' => $pole]);
                         break;
@@ -59,6 +48,29 @@ class UserController extends Controller
         }else{
             $this->redirect("Nejste přihlášený.","home","index","danger");
         }
+    }
+
+    public function articles(){
+        $article = $this->admin->getAuthorOfArticle();
+        $reviewers = $this->admin->getReviewers();
+        $i = 0;
+        foreach($article as $value){
+            $review[$i]=$this->admin->getReviews($value);
+            $i++;
+        }
+        if(empty($review)){
+            echo $this->twig->render('user_articles.twig', ['article' => $article,
+                'reviewers' => $reviewers]);
+        }else{
+            echo $this->twig->render('user_articles.twig', ['article' => $article,
+                'reviewers' => $reviewers,
+                'review' => $review]);
+        }
+    }
+
+    public function users(){
+        $array = $this->admin->getOtherUsers();
+        echo $this->twig->render('user_users.twig', ['array' => $array]);
     }
 
 
@@ -251,6 +263,9 @@ class UserController extends Controller
         for($i=0;$i<count($pole);$i++){
             $cut = explode(DIRECTORY_SEPARATOR,$pole[$i]['soubor']);
             $pole[$i]['soubor_short'] = end($cut);
+        }for($i=0;$i<count($pole);$i++){
+            $cut = explode(DIRECTORY_SEPARATOR,$pole[$i]['soubor']);
+            $pole[$i]['soubor_short'] = end($cut);
         }
         return $pole;
     }
@@ -310,7 +325,7 @@ class UserController extends Controller
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
                 $this->admin->deleteReview($_REQUEST['param']);
-                $this->redirect("Recenze odebrána.","user","index", "success");
+                $this->redirect("Recenze úspěšně odebrána.","user","index", "success");
             }else {
                 $this->redirect("Nic nezadáno.","user","index", "danger");
             }
@@ -322,8 +337,15 @@ class UserController extends Controller
     function rejectArticle(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
-                $this->admin->rejectArticle($_REQUEST['param']);
-                $this->redirect("Článek zamítnut.","user","index", "success");
+                $array = $this->admin->getSmallReview($_REQUEST['param']);
+                if($array['soucet_uzivatelu'] == 0){
+                    $this->redirect("Článek nelze zamítnout, nikdo ho zatím neohodnotil.","user","index", "danger");
+                }else{
+                    $this->admin->rejectArticle($_REQUEST['param']);
+                    $this->admin->deleteReview($_REQUEST['param']);
+                    $this->redirect("Článek byl úspěšně zamítnut.","user","index", "success");
+                }
+
             }else {
                 $this->redirect("Nic nezadáno.","user","index", "danger");
             }
@@ -336,9 +358,8 @@ class UserController extends Controller
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
                 $array = $this->admin->getSmallReview($_REQUEST['param']);
-                print_r($array);
                 if($array['soucet_uzivatelu'] == 0){
-                    $this->redirect("Článek nelze publikovat, nikdo ho zatím neohodnotil.","user","index", "success");
+                    $this->redirect("Článek nelze publikovat, nikdo ho zatím neohodnotil.","user","index", "danger");
                 }else{
                     $avg = $array['soucet_hodnoceni']/$array['soucet_uzivatelu'];
                     $this->admin->setAVG($_REQUEST['param'],$avg);

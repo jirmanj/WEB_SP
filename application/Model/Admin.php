@@ -52,7 +52,7 @@ class Admin extends Model
 
     function deleteReview($id){
         $id = htmlspecialchars($id);
-        $query = $this->db->prepare('DELETE FROM hodnoceni WHERE id_hodnoceni= :id');
+        $query = $this->db->prepare('DELETE FROM hodnoceni WHERE id_hodnoceni= :id OR id_prispevky= :id');
         $query->bindParam(':id',$id);
         $query->execute();
     }
@@ -84,6 +84,15 @@ class Admin extends Model
         $query->bindParam(':prumer',$prumer);
         $query->execute();
 
+    }
+
+    function getOtherUsers(){
+        $query = $this->db->prepare('SELECT jmeno, prijmeni, hodnost
+                                      FROM  uzivatel
+                                      WHERE  hodnost >= 2
+                                      ORDER BY hodnost DESC ');
+        $query->execute();
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
  /*  function getAll(){
        $query = $this->db->prepare('SELECT

@@ -1,0 +1,17 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Publikovaný článek konferenčního systému</h2>
+    <p>Nyní se nacházíte v <strong>{{ array.nazev }}</strong>.</p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+             <h3>{{ array.nazev }}</h3>
+            <p> {{ array.text }}</p>
+            <p><strong>Autor: </strong>{{ array.autor }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -11,14 +11,17 @@
 
 namespace Mini\Controller;
 
+use Mini\Model\User;
+
 class HomeController extends Controller
 {
+    private $user;
     /**
      * PAGE: index
      * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
      */
 
-    private $user;
+
     public function __construct()
     {
         parent::__construct();
@@ -29,8 +32,22 @@ class HomeController extends Controller
     public function index()
     {
         // load views
-       // $publicArticles = $this->user->;
-        echo $this->twig->render('home.twig');
+        $publicArticles = $this->user->fewPublicArticles();
+        for($i=0;$i<count($publicArticles);$i++){
+            $publicArticles[$i]['ukazka'] .= "...";
+        }
+        echo $this->twig->render('home.twig',['articles' => $publicArticles]);
         $_SESSION['info'] = null;
+    }
+
+    function article(){
+        if(isset($_REQUEST['param'])){
+            $array = $this->user->onePublicArticle($_REQUEST['param']);
+            echo $this->twig->render('article.twig',['array' => $array]);
+
+        }else {
+            $this->redirect("Nic nezadáno.","home","index", "danger");
+        }
+
     }
 }

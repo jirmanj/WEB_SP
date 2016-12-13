@@ -1,0 +1,45 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Správa uživatelů</h2>
+    <p>Nachazíte se ve správě uživatelů.</p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class = "table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="col-md-3 text-center">Jméno</th>
+                        <th class="col-md-3 text-center">Příjmeni</th>
+                        <th class="col-md-3 text-center">Hodnost</th>
+                        <th class="col-md-1 text-center">Upravit hodnost</th>
+                        <th class="col-md-1 text-center">Vymazat uživatele</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for value in array %}
+                    <tr>
+                        <td class ="text-center">{{ value.jmeno }}</td>
+                        <td class ="text-center">{{ value.prijmeni }}</td>
+                        {% if value.hodnost == 2 %}
+                            <td class ="text-center">Recenzent</td>
+                        {% elseif value.hodnost == 3 %}
+                            <td class ="text-center">Autor</td>
+                        {% else %}
+                            <td class ="text-center">Zablokovaný</td>
+                        {% endif %}
+                        <td class ="text-center">Upravit</td>
+                        <td class ="text-center">Smazat</td>
+                    </tr>
+                    {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

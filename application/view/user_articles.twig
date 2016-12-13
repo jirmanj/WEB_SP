@@ -1,0 +1,83 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Správa článků</h2>
+    <p>Nachazíte se ve správě článků.</p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+    <h2>Seznam článků</h2>
+    <div class = "table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class ="text-center" rowspan="2">Název článku</th>
+                <th class ="text-center" rowspan="2">Autor</th>
+                <th class ="text-center" colspan="7">Recenze</th>
+                <th class ="text-center" rowspan="2" colspan="2">Rozhodnutí</th>
+            <tr>
+                <th class ="text-center">Recenzent</th>
+                <th class ="text-center">Orig.</th>
+                <th class ="text-center">Téma</th>
+                <th class ="text-center">Tech.</th>
+                <th class ="text-center">Jazyk.</th>
+                <th class ="text-center">Dopor.</th>
+                <th class ="text-center">Vymazat</th>
+            </tr>
+            </tr>
+            </thead>
+            <tbody>
+            {%  set i = 0 %}
+            {% for value in article %}
+                <tr>
+                <td class ="text-center" rowspan="3">{{ value.nazev }}</td>
+                <td class ="text-center" rowspan="3">{{ value.autor }}</td>
+                {% for j in 0..2 %}
+                    {% if review[i][j].recenzent %}
+                        <td>{{ review[i][j].recenzent }}</td>
+                        {% if review[i][j].doporuceni %}
+                            <td class ="text-center">{{ review[i][j].originalita }}</td>
+                            <td class ="text-center">{{ review[i][j].tema }}</td>
+                            <td class ="text-center">{{ review[i][j].tech_kvalita }}</td>
+                            <td class ="text-center">{{ review[i][j].jazyk_kvalita }}</td>
+                            <td class ="text-center">{{ review[i][j].doporuceni }}</td>
+                            <td class ="text-center"><a href="{{ makeURL("user","deleteReview",review[i][j].id_hodnoceni) }}">Vymazat</a></td>
+                        {% else %}
+                            <td class ="text-center" colspan="6">Čeká se zhodnocení článku recenzentem</td>
+                        {% endif %}
+
+                    {% else %}
+                        <td class ="text-center" colspan="7">
+                            <form class="form-inline" action="{{ makeURL("user","setArticleToReviewer",value.id_prispevky) }}" method="POST">
+                                <div class="input-group col-xs-9">
+                                    <select name="recenzent[id]" class="form-control" required>
+                                        <option disabled selected value> - Vyber možnost - </option>
+                                        {% for value2 in reviewers %}
+                                            <option value={{ value2.id_uzivatel }}>{{ value2.cele_jmeno }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                </div>
+                                <input type="submit" class="btn btn-success" value="Uložit recenzenta" id="login-btn">
+
+                            </form>
+                        </td>
+
+                    {% endif %}
+                    {% if j == 0 %}
+                        <td class ="text-center" rowspan="3"><a href="{{ makeURL("user","shareArticle",value.id_prispevky) }}" >Publikovat</a></td>
+                        <td class ="text-center" rowspan="3"><a href="{{ makeURL("user","rejectArticle",value.id_prispevky) }}" >Zamitnout</a></td>
+
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+
+                {%  set i = i+1 %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

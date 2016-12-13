@@ -135,7 +135,19 @@ class User extends Model
 
 
     function fewPublicArticles(){
-        $query = $this->db->prepare('SELECT TOP 5 nazev, text, posouzeno FROM prispevky WHERE posouzeno>0');
+        $query = $this->db->prepare('SELECT p.id_prispevky, p.nazev, p.text, p.posouzeno, MID(p.text,1,500) AS ukazka, 
+                                      concat(u.jmeno, \' \', u.prijmeni) AS autor
+                                      FROM prispevky p, uzivatel u WHERE posouzeno>0 AND u.id_uzivatel = p.id_uzivatel LIMIT 6');
+        $query->execute();
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    function onePublicArticle($id){
+        $id = htmlspecialchars($id);
+        $query = $this->db->prepare('SELECT p.id_prispevky, p.nazev, p.text,
+                                     concat(u.jmeno, \' \', u.prijmeni) AS autor
+                                     FROM prispevky p, uzivatel u WHERE id_prispevky = :id AND u.id_uzivatel = p.id_uzivatel');
+        $query->bindParam(':id',$id);
         $query->execute();
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
