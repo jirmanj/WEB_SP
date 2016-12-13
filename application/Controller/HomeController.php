@@ -18,15 +18,18 @@ class HomeController extends Controller
      * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
      */
 
+    private $user;
     public function __construct()
     {
         parent::__construct();
+        $this->user = new User();
     }
 
 
     public function index()
     {
         // load views
+       // $publicArticles = $this->user->;
         echo $this->twig->render('home.twig');
         $_SESSION['info'] = null;
     }

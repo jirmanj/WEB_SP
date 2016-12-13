@@ -66,7 +66,7 @@ class User extends Model
         $id = $_SESSION['user']['id_uzivatel'];
         $nazev = htmlspecialchars($article['nazev']);
         $text = htmlspecialchars($article['text']);
-        $query = $this->db->prepare('UPDATE prispevky SET nazev = :nazev, text = :text 
+        $query = $this->db->prepare('UPDATE prispevky SET nazev = :nazev, text = :text, posouzeno = NULL
                                      WHERE id_prispevky = :id AND id_uzivatel = :id_u');
         $query->bindParam(':nazev',$nazev);
         $query->bindParam(':text',$text);
@@ -131,6 +131,13 @@ class User extends Model
         $query->bindParam(':text',$text);
         $query->execute();
 
+    }
+
+
+    function fewPublicArticles(){
+        $query = $this->db->prepare('SELECT TOP 5 nazev, text, posouzeno FROM prispevky WHERE posouzeno>0');
+        $query->execute();
+        return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
 

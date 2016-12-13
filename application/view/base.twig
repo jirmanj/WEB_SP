@@ -45,11 +45,23 @@
             <li><a href="{{ makeURL("user","index") }}">Administrace</a></li>
           {% endif %}
       </ul>
-      <ul class="nav navbar-nav navbar-right">
+
           {% if session.user is not null %}
-            <a href="#"><p class="navbar-text">{{  session.user.jmeno }} {{ session.user.prijmeni }}</p></a>
-            <a href="{{ makeURL("user","logout") }}"><button class="btn btn-success">Odhlásit se</button></a>
+         <ul class="nav navbar-nav navbar-right col-md-3">
+            <li><a href="">{{  session.user.jmeno }} {{ session.user.prijmeni }}
+                {% if session.user.hodnost == 3 %}
+                    (Autor)
+                    {% elseif session.user.hodnost == 2 %}
+                    (Recenzent)
+                    {% else %}
+                    (Admin)
+                    {% endif %}
+
+                </a></li>
+            <a href="{{ makeURL("user","logout") }}"><button class="btn btn-danger navbar-btn">Odhlásit se</button></a>
+         </ul>
           {%  else %}
+          <ul class="nav navbar-nav navbar-right col-md-6">
             <form class="navbar-form navbar-right" action="{{ makeURL("register","login") }}" method="POST">
               <a href ="{{ makeURL("register","index") }}">Registrace</a>
               <div class="form-group">
@@ -60,8 +72,8 @@
               </div>
               <button type="submit" class="btn btn-success">Přihlásit se</button>
             </form>
+          </ul>
           {% endif %}
-      </ul>
     </div>
   </nav>
 

@@ -11,12 +11,14 @@
 
 namespace Mini\Controller;
 
+use Mini\Model\Admin;
 use Mini\Model\Reviewer;
 use Mini\Model\User;
 
 class UserController extends Controller
 {
     private $reviewer;
+    private $admin;
     /**
      * PAGE: index
      * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
@@ -26,6 +28,8 @@ class UserController extends Controller
     {
         parent::__construct();
         $this->reviewer = new Reviewer();
+        $this->admin = new Admin();
+
     }
 
 
@@ -33,7 +37,17 @@ class UserController extends Controller
     {
         if(isset($_SESSION['user'])){
             switch($_SESSION['user']['hodnost']){
-                case 1: break;
+                case 1: $article = $this->admin->getAuthorOfArticle();
+                        $reviewers = $this->admin->getReviewers();
+                        $i = 0;
+                        foreach($article as $value){
+                            $review[$i]=$this->admin->getReviews($value);
+                            $i++;
+                        }
+                        echo $this->twig->render('user_summary.twig', ['article' => $article,
+                                                                        'reviewers' => $reviewers,
+                                                                        'review' => $review]);
+                        break;
                 case 2: $pole = $this->reviewer->getYourWork();
                         echo $this->twig->render('user_summary.twig', ['pole' => $pole]);
                         break;
@@ -262,6 +276,79 @@ class UserController extends Controller
             }else {
                 $this->redirect("Žádný zadaný článek.","user","index", "danger");
             }
+        }
+    }
+
+//************************************************************************************************
+//******************************** "1" functional methods ****************************************
+//************************************************************************************************
+/*private function getInfoAboutArticles(){
+    $autori = $this->admin->getAuthorOfArticle();
+  //  print_r($autori);
+    for($i=0;$i<count($autori);$i++){
+        $autori[$i]['rezenzenti'] = $this->admin->getReviewsForArticle($autori[$i]['id_prispevky']);
+    }
+    print_r($autori);
+    die;
+} */
+
+    function setArticleToReviewer(){
+        if(!isset($_POST['recenzent'])){
+            $this->redirect("Chyba při přenosu dat.","user","index", "danger");
+        }else{
+            $new_review = $_POST['recenzent'];
+            if(isset($_REQUEST['param'])){
+                $this->admin->setNewReview($new_review,$_REQUEST['param']);
+                $this->redirect("Uživateli přidán článek k ohodnocení.","user","index", "success");
+            }else {
+                $this->redirect("Nic nezadáno.","user","index", "danger");
+            }
+        }
+    }
+
+    function deleteReview(){
+        if($_SESSION['user']['hodnost'] == 1){
+            if(isset($_REQUEST['param'])){
+                $this->admin->deleteReview($_REQUEST['param']);
+                $this->redirect("Recenze odebrána.","user","index", "success");
+            }else {
+                $this->redirect("Nic nezadáno.","user","index", "danger");
+            }
+        }else{
+            $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
+        }
+    }
+
+    function rejectArticle(){
+        if($_SESSION['user']['hodnost'] == 1){
+            if(isset($_REQUEST['param'])){
+                $this->admin->rejectArticle($_REQUEST['param']);
+                $this->redirect("Článek zamítnut.","user","index", "success");
+            }else {
+                $this->redirect("Nic nezadáno.","user","index", "danger");
+            }
+        }else{
+            $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
+        }
+    }
+
+    function shareArticle(){
+        if($_SESSION['user']['hodnost'] == 1){
+            if(isset($_REQUEST['param'])){
+                $array = $this->admin->getSmallReview($_REQUEST['param']);
+                print_r($array);
+                if($array['soucet_uzivatelu'] == 0){
+                    $this->redirect("Článek nelze publikovat, nikdo ho zatím neohodnotil.","user","index", "success");
+                }else{
+                    $avg = $array['soucet_hodnoceni']/$array['soucet_uzivatelu'];
+                    $this->admin->setAVG($_REQUEST['param'],$avg);
+                    $this->redirect("Článek úspěšně publikován.","user","index", "success");
+                }
+            }else {
+                $this->redirect("Nic nezadáno.","user","index", "danger");
+            }
+        }else{
+            $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
         }
     }
 

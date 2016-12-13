@@ -9,7 +9,8 @@
         <div class="container">
             <p><a href=" {{ makeURL("user","create") }}">Vytvořit nový článek</a></p>
             <h2>Seznam článků</h2>
-            <table class="table">
+        <div class = "table-responsive">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th>Název článku</th>
@@ -45,30 +46,99 @@
     {% elseif session.user.hodnost == 2 %}
         <div class="container">
             <h2>Seznam článků</h2>
+        <div class = "table-responsive table-bordered">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Název článku</th>
-                    <th>Autor</th>
-                    <th>Ohodnotit</th>
-                </tr>
+                    <tr>
+                        <th>Název článku</th>
+                        <th>Autor</th>
+                        <th>Ohodnotit</th>
+                    </tr>
                 </thead>
-            <tbody>
-            {% for value in pole %}
-                <tr>
-                    <td>{{ value.nazev }}</td>
-                    <td>{{ value.autor }}</td>
-                    <td><a href="{{ makeURL("user","evaluate",value.id_hodnoceni )}}">Ohodnotit</a></td>
-                </tr>
-            {% endfor %}
-
-
-            </tbody>
-
-
+                <tbody>
+                {% for value in pole %}
+                    <tr>
+                        <td>{{ value.nazev }}</td>
+                        <td>{{ value.autor }}</td>
+                        <td><a href="{{ makeURL("user","evaluate",value.id_hodnoceni )}}">Ohodnotit</a></td>
+                    </tr>
+                {% endfor %}
+                 </tbody>
             </table>
-
         </div>
     {% else %}
+        <div class="container">
+            <h2>Seznam článků</h2>
+        <div class = "table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th rowspan="2">Název článku</th>
+                    <th rowspan="2">Autor</th>
+                    <th colspan="7">Recenze</th>
+                    <th rowspan="2" colspan="2">Rozhodnutí</th>
+                    <tr>
+                        <th>Recenzent</th>
+                        <th>Orig.</th>
+                        <th>Téma</th>
+                    <th>Tech.</th>
+                    <th>Jazyk.</th>
+                    <th>Dopor.</th>
+                    <th>Vymazat</th>
+                    </tr>
+                </tr>
+                </thead>
+                <tbody>
+                    {%  set i = 0 %}
+                    {% for value in article %}
+                        <tr>
+                        <td rowspan="3">{{ value.nazev }}</td>
+                        <td rowspan="3">{{ value.autor }}</td>
+                            {% for j in 0..2 %}
+                                {% if review[i][j].recenzent %}
+                                    <td>{{ review[i][j].recenzent }}</td>
+                                    {% if review[i][j].doporuceni %}
+                                        <td>{{ review[i][j].originalita }}</td>
+                                        <td>{{ review[i][j].tema }}</td>
+                                        <td>{{ review[i][j].tech_kvalita }}</td>
+                                        <td>{{ review[i][j].jazyk_kvalita }}</td>
+                                        <td>{{ review[i][j].doporuceni }}</td>
+                                        <td><a href="{{ makeURL("user","deleteReview",review[i][j].id_hodnoceni) }}">Vymazat</a></td>
+                                    {% else %}
+                                        <td colspan="6">Čeká se zhodnocení článku recenzentem</td>
+                                    {% endif %}
+
+                                {% else %}
+                                    <td colspan="7">
+                                        <form class="form-inline" action="{{ makeURL("user","setArticleToReviewer",value.id_prispevky) }}" method="POST">
+                                            <div class="input-group col-xs-9">
+                                                <select name="recenzent[id]" class="form-control" required>
+                                                    <option disabled selected value> - Vyber možnost - </option>
+                                                    {% for value2 in reviewers %}
+                                                        <option value={{ value2.id_uzivatel }}>{{ value2.cele_jmeno }}</option>
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                            <input type="submit" class="btn btn-success" value="Uložit recenzenta" id="login-btn">
+
+                                        </form>
+                                    </td>
+
+                                {% endif %}
+                                {% if j == 0 %}
+                                    <td rowspan="3"><a href="{{ makeURL("user","shareArticle",value.id_prispevky) }}" >Publikovat</a></td>
+                                    <td rowspan="3"><a href="{{ makeURL("user","rejectArticle",value.id_prispevky) }}" >Zamitnout</a></td>
+
+                                {% endif %}
+                                </tr>
+                            {% endfor %}
+
+                        {%  set i = i+1 %}
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 {% endblock %}
