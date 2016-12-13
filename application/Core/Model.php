@@ -6,8 +6,8 @@ use PDO;
 
 class Model
 {
-    /**
-     * @var null Database Connection
+    /****
+     * @var null PDO
      */
     public $db = null;
 

@@ -30,5 +30,16 @@ class Controller{
         }
     }
 
+    protected function redirect($text , $page, $action, $state){
+        $_SESSION['info']['text'] = $text;
+        $_SESSION['info']['state'] = $state;
+        header('location: ' . $this->makeURL($page,$action));
+    }
+    protected function redirect_with_url($text, $url, $state){
+        $_SESSION['info']['text'] = $text;
+        $_SESSION['info']['state'] = $state;
+        header('location: ' . $url);
+    }
+
 
 }

@@ -1,0 +1,27 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Vytvoření nového článku</h2>
+    <p>Zde můžete jednoduše vytvořit nový článek.</p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <form action="{{ makeURL("user","createArticle") }}" method="POST" enctype="multipart/form-data">
+            <div class="input-group col-xs-6">
+                <span class="input-group-addon">Název článku</span>
+                <input type="text" class="form-control" name="article[nazev]" placeholder="Název článku" required>
+            </div>
+            <div class="input-group col-xs-8 ">
+                <span class="input-group-addon">Samotný text</span>
+                <textarea class="form-control" rows="13" name="article[text]" required></textarea>
+            </div>
+            <div class="input-group col-xs-6 ">
+                <strong>Načíst PDF soubor (dobrovolné):</strong>
+                <input type="file" placeholder="PDF soubor" name="file">
+            </div>
+            <input type="submit" class="btn btn-success" value="Přidat článek" id="login-btn">
+        </form>
+    </div>
+{% endblock %}

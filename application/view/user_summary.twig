@@ -1,0 +1,74 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Administrace</h2>
+{% endblock %}
+
+{% block content %}
+    {% if session.user.hodnost == 3 %}
+        <div class="container">
+            <p><a href=" {{ makeURL("user","create") }}">Vytvořit nový článek</a></p>
+            <h2>Seznam článků</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Název článku</th>
+                    <th>Příloha</th>
+                    <th>Posouzení admina</th>
+                    <th>Upravit článek</th>
+                    <th>Vymazat článek</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in pole %}
+                <tr>
+                    <td>{{ value.nazev }}</td>
+
+                        <td>{{ value.soubor_short }}</td>
+
+                    {% if value.posouzeno is empty %}
+                        <td>Čeká se na potvrzení</td>
+                    {% elseif  value.posouzeno  < 1 %}
+                        <td>nepřijatý</td>
+                    {% else %}
+                        <td>Přijatý</td>
+                    {% endif %}
+                    <td><a href="{{ makeURL("user","edit", value.id_prispevky )}}">Upravit</a></td>
+                    <td><a href="{{ makeURL("user","delete",value.id_prispevky )}}">Vymazat</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <p><a href=" {{ makeURL("user","create") }}">Vytvořit nový článek</a></p>
+        </div>
+    {% elseif session.user.hodnost == 2 %}
+        <div class="container">
+            <h2>Seznam článků</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Název článku</th>
+                    <th>Autor</th>
+                    <th>Ohodnotit</th>
+                </tr>
+                </thead>
+            <tbody>
+            {% for value in pole %}
+                <tr>
+                    <td>{{ value.nazev }}</td>
+                    <td>{{ value.autor }}</td>
+                    <td><a href="{{ makeURL("user","evaluate",value.id_hodnoceni )}}">Ohodnotit</a></td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+
+
+            </table>
+
+        </div>
+    {% else %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.twig' %}
+{% block information %}
+    <h2>Hodnocení článku</h2>
+    <p>Zde můžete ohodnotit článek <strong>{{ pole.nazev }}.</strong></p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <label>Název článku:</label>
+        <p>{{ pole.nazev }}</p>
+        <label>Samotný text:</label>
+        <p>{{ pole.text }}</p>
+        <hr>
+
+
+
+        <form action="{{ makeURL("user","reviewArticle",pole.id_hodnoceni) }}" method="POST" enctype="multipart/form-data">
+            <div class="input-group col-xs-3">
+                <span class="input-group-addon">Originalita</span>
+                <select name="review[originalita]" class="form-control" required>
+                    <option disabled selected value> - Vyber možnost - </option>
+                    <option value="1">1 = velice originální</option>
+                    <option value="2">2 = originální</option>
+                    <option value="3">3 = normální</option>
+                    <option value="4">4 = neoriginální</option>
+                    <option value="5">5 = velice neoriginální</option>
+                </select>
+            </div>
+            <div class="input-group col-xs-3">
+                <span class="input-group-addon">Téma</span>
+                <select name="review[tema]" class="form-control" required>
+                    <option disabled selected value> - Vyber možnost - </option>
+                    <option value="1">1 = luxusní</option>
+                    <option value="2">2 = super</option>
+                    <option value="3">3 = dobré</option>
+                    <option value="4">4 = nic moc</option>
+                    <option value="5">5 = špatné</option>
+                </select>
+            </div>
+            <div class="input-group col-xs-3">
+                <span class="input-group-addon">Technická kvalita</span>
+                <select name="review[tech_kvalita]" class="form-control" required>
+                    <option disabled selected value> - Vyber možnost - </option>
+                    <option value="1">1 = vynikající</option>
+                    <option value="2">2 = nadprůměr</option>
+                    <option value="3">3 = dobrá</option>
+                    <option value="4">4 = podprůměr</option>
+                    <option value="5">5 = bídná</option>
+                </select>
+            </div>
+            <div class="input-group col-xs-3">
+                <span class="input-group-addon">Jazyková kvalita</span>
+                <select name="review[jazyk_kvalita]" class="form-control" required>
+                    <option disabled selected value> - Vyber možnost - </option>
+                    <option value="1">1 = vynikající</option>
+                    <option value="2">2 = nadprůměr</option>
+                    <option value="3">3 = dobrá</option>
+                    <option value="4">4 = podprůměr</option>
+                    <option value="5">5 = bídná</option>
+                </select>
+            </div>
+            <div class="input-group col-xs-3">
+                <span class="input-group-addon">Doporučení</span>
+                <select name="review[doporuceni]" class="form-control" required>
+                    <option disabled selected value> - Vyber možnost - </option>
+                    <option value="1">1 = Rozhodně přijmout</option>
+                    <option value="2">2 = Spíše přijmout</option>
+                    <option value="3">3 = Mezi</option>
+                    <option value="4">4 = Spíše nepřijmout</option>
+                    <option value="5">5 = Nepřijmout</option>
+                </select>
+            </div>
+            <div class="input-group col-xs-8 ">
+                <span class="input-group-addon">Poznámka</span>
+                <textarea class="form-control" rows="8" name="review[poznamka]"></textarea>
+            </div>
+
+            <input type="submit" class="btn btn-success" value="Ohodnotit článek" id="login-btn">
+        </form>
+    </div>
+{% endblock %}

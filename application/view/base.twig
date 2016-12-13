@@ -22,8 +22,8 @@
     <link href="{{ constant('URL') }}css/jumbotron.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]><script src="{{ constant('URL') }}js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="{{ constant('URL') }}js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -34,42 +34,47 @@
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="{{ makeURL("home","index") }}">WEB</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            {% if session.prihlaseni is not null %}
-
-
-            {%  else %}
-              <form class="navbar-form navbar-right" action="{{ makeURL("register","prihlasit") }}" method="POST">
-                <a href ="{{ makeURL("register","index") }}">Registrace</a>
-                <div class="form-group">
-                  <input type="email" name="su[email]" placeholder="Email" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <input type="password" name="su[heslo]" placeholder="Password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-success">Sign in</button>
-              </form>
-            {% endif %}
-
-
-        </div><!--/.navbar-collapse -->
-      </div> 
-    </nav>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">WEB</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="{{ makeURL("home","index") }}">Home</a></li>
+          {% if session.user is not null%}
+            <li><a href="{{ makeURL("user","index") }}">Administrace</a></li>
+          {% endif %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          {% if session.user is not null %}
+            <a href="#"><p class="navbar-text">{{  session.user.jmeno }} {{ session.user.prijmeni }}</p></a>
+            <a href="{{ makeURL("user","logout") }}"><button class="btn btn-success">Odhlásit se</button></a>
+          {%  else %}
+            <form class="navbar-form navbar-right" action="{{ makeURL("register","login") }}" method="POST">
+              <a href ="{{ makeURL("register","index") }}">Registrace</a>
+              <div class="form-group">
+                <input type="email" name="visitor[email]" placeholder="Email" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <input type="password" name="visitor[heslo]" placeholder="Heslo" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-success">Přihlásit se</button>
+            </form>
+          {% endif %}
+      </ul>
+    </div>
+  </nav>
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
+          {% block alert %}
+              {% if session.info is not null%}
+                <div class="alert alert-{{ session.info.state }}">
+                    {{ session.info.text }}
+                </div>
+              {% endif %}
+          {% endblock %}
           {% block information %}
           {% endblock %}
       </div>

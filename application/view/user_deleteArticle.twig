@@ -1,0 +1,23 @@
+{% extends 'base.twig' %}
+
+{% block information %}
+    <h2>Mazání článku</h2>
+    <p>Zde můžete vymazat článek <strong>{{ pole.nazev }}</strong>.</p>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <form action="{{ makeURL("user","deleteArticle",pole.id_prispevky) }}" method="POST">
+            <div class="input-group col-xs-6">
+                <label for="comment">Název článku:</label>
+                <input type="text" class="form-control" name="article[nazev]" value="{{ pole.nazev }}" placeholder="Název článku" readonly>
+            </div>
+            <div class="input-group col-xs-8 ">
+                <label for="comment">Samotný text:</label>
+                <textarea class="form-control" rows="13" name="article[text]"readonly>{{ pole.text }}</textarea>
+            </div>
+            <input type="submit" class="btn btn-success" value="Vymazat článek" id="login-btn">
+        </form>
+    </div>
+{% endblock %}

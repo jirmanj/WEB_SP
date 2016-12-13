@@ -1,32 +1,27 @@
 {% extends 'base.twig' %}
 
 {% block information %}
-    {% if session.hlaska is not null %}
-        <div class="alert alert-{{ session.hlaska.stav }}">
-            {{ session.hlaska.text }}
-        </div>
-    {% endif %}
     <h1>Registrace!</h1>
-    <form action="{{ makeURL("register","registrovat") }}" method="POST">
+    <form action="{{ makeURL("register","register") }}" method="POST">
         <div class="input-group col-xs-4">
             <span class="input-group-addon">Jméno</span>
-            <input type="text" class="form-control" name="nu[jmeno]" placeholder="Jméno nového uživatele" required>
+            <input type="text" class="form-control" name="visitor[jmeno]" placeholder="Jméno nového uživatele" required>
         </div>
         <div class="input-group col-xs-4">
             <span class="input-group-addon">Příjmení</span>
-            <input type="text" class="form-control" name="nu[prijmeni]" placeholder="Příjmení nového uživatele" required>
+            <input type="text" class="form-control" name="visitor[prijmeni]" placeholder="Příjmení nového uživatele" required>
         </div>
         <div class="input-group col-xs-4 ">
             <span class="input-group-addon">Email</span>
-            <input  type="email" class="form-control " name="nu[email]" placeholder="Email nového uživatele" required>
+            <input  type="email" class="form-control " name="visitor[email]" placeholder="Email nového uživatele" required>
         </div>
         <div class="input-group col-xs-4">
             <span class="input-group-addon">Heslo</span>
-            <input type="password" class="form-control" name="nu[heslo]" placeholder="Heslo nového uživatele" required>
+            <input type="password" class="form-control" name="visitor[heslo]" placeholder="Heslo nového uživatele" required>
         </div>
         <div class="input-group col-xs-4">
             <span class="input-group-addon">Znova heslo</span>
-            <input type="password" class="form-control" name="nu[znovaheslo]" placeholder="Znovu heslo nového uživatele" required>
+            <input type="password" class="form-control" name="visitor[znovaheslo]" placeholder="Znovu heslo nového uživatele" required>
         </div>
         <input type="submit" class="btn btn-success" value="Registrovat" id="login-btn">
 

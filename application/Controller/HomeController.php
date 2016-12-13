@@ -28,6 +28,6 @@ class HomeController extends Controller
     {
         // load views
         echo $this->twig->render('home.twig');
-        $_SESSION['hlaska'] = null;
+        $_SESSION['info'] = null;
     }
 }

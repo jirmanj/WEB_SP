@@ -29,56 +29,62 @@ class RegisterController extends Controller
     public function index()
     {
         echo $this->twig->render('register.twig');
-        $_SESSION['hlaska'] = null;
+        $_SESSION['info'] = null;
     }
-    public function registrovat(){
-        if(!isset($_POST['nu'])){
-            $this->premistit("Něco se nevydařilo..","register","index", "danger");
+    public function register(){
+        if(!isset($_POST['visitor'])){
+            $this->redirect("Chyba při přenosu dat.","register","index", "danger");
         }else{
-                $uzivatel = new Visitor();
-                $arr = $uzivatel->zjistiShoduEmailu($_POST['nu']['email']);
+                $new_visitor = $_POST['visitor'];
+                $visitors_email = $new_visitor['email'];
+                $visitor = new Visitor();
+                $arr = $visitor->compareEmails($visitors_email);
                 if(empty($arr)){
-                    if($_POST['nu']['heslo'] == $_POST['nu']['znovaheslo']){
-                        $uzivatel->pridejUzivatele($_POST['nu']);
-                        $arr = $uzivatel->zjistiShoduEmailu($_POST['nu']['email']);
+                    if($new_visitor['heslo'] == $new_visitor['znovaheslo']){
+                        $visitor->addVisitorToDB($new_visitor);
+                        $arr = $visitor->compareEmails($visitors_email);
                         if(empty($arr)){
-                            $this->premistit("Nepodařilo se uživatele přidat..","register","index", "danger");
+                            $this->redirect("Nepodařilo se uživatele zaregistrovat.","register","index", "danger");
                         }else{
-                            $this->premistit("Uživatel úspěšně přidán!","home","index","success");
+                            $this->redirect("Uživatel úspěšně zaregistrován!","home","index","success");
                         }
                     }else{
-                        $this->premistit("Hesla nejsou shodná, zkuste to znovu.","register","index", "danger");
+                        $this->redirect("Hesla nejsou shodná, zkuste to znovu.","register","index", "danger");
                     }
                 }else{
-                    $this->premistit("Jiný uživatel již používá email: ".$_POST['nu']['email'].".","register","index","danger");
+                    $this->redirect("Jiný uživatel již používá email: ".$visitors_email.".","register","index","danger");
 
                 }
         }
 
     }
-    private function premistit($hlaska ,$page, $action, $stav){
-        $_SESSION['hlaska']['text'] = $hlaska;
-        $_SESSION['hlaska']['stav'] = $stav;
-        header('location: ' . $this->makeURL($page,$action));
-    }
-    private function premistit_url($hlaska, $url, $stav){
-        $_SESSION['hlaska']['text'] = $hlaska;
-        $_SESSION['hlaska']['stav'] = $stav;
-        header('location: ' . $url);
-    }
 
-    public function prihlasit(){
-        if(!isset($_POST['su'])){
-                $this->premistit("Něco se pokazilo..","home","index", "danger");
+    public function login(){
+        if(!isset($_POST['visitor'])){
+            $this->redirect("Chyba při přenosu dat.","home","index", "danger");
         }else{
-            $uzivatel = new Visitor();
-            $arr = $uzivatel->zjistiPrihlaseni($_POST['su']['email'], $_POST['su']['heslo']);
+            $visitor = new Visitor();
+            $visitors_email = $_POST['visitor']['email'];
+            $visitors_password = $_POST['visitor']['heslo'];
+
+            $arr = $visitor->compareLogin($visitors_email, $visitors_password);
             if(empty($arr)){
-                $this->premistit_url("Špatně zadaný email nebo heslo.", $_SERVER['HTTP_REFERER'], "danger");
+                $this->redirect_with_url("Špatně zadaný email nebo heslo.", $_SERVER['HTTP_REFERER'], "danger");
             }else{
-                $this->premistit(null,"user","index");
-                $_SESSION['user'] = $uzivatel;
+                $_SESSION['user'] = $visitor->getInfoAboutVisitor($visitors_email);
+                $this->redirect(null,"home","index",null);
             }
         }
     }
+
+/*    private function redirect($text , $page, $action, $state){
+        $_SESSION['info']['text'] = $text;
+        $_SESSION['info']['state'] = $state;
+        header('location: ' . $this->makeURL($page,$action));
+    }
+    private function redirect_with_url($text, $url, $state){
+        $_SESSION['info']['text'] = $text;
+        $_SESSION['info']['state'] = $state;
+        header('location: ' . $url);
+    } */
 }
