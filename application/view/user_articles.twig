@@ -49,7 +49,7 @@
                         {% endif %}
 
                     {% else %}
-                        <td class ="text-center" colspan="7">
+                        <td colspan="7">
                             <form class="form-inline" action="{{ makeURL("user","setArticleToReviewer",value.id_prispevky) }}" method="POST">
                                 <div class="input-group col-xs-9">
                                     <select name="recenzent[id]" class="form-control" required>

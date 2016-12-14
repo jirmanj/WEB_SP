@@ -27,13 +27,22 @@
                         <td class ="text-center">{{ value.prijmeni }}</td>
                         {% if value.hodnost == 2 %}
                             <td class ="text-center">Recenzent</td>
+                            {% set arr = ['Zablokovaný','Autor'] %}
                         {% elseif value.hodnost == 3 %}
                             <td class ="text-center">Autor</td>
+                            {% set arr = ['Zablokovaný','Recenzent'] %}
                         {% else %}
                             <td class ="text-center">Zablokovaný</td>
+                            {% set arr = ['Autor','Recenzent'] %}
                         {% endif %}
-                        <td class ="text-center">Upravit</td>
-                        <td class ="text-center">Smazat</td>
+                        <td class ="text-center">
+                            <form class="form-inline" action="{{ makeURL("user","editUser",value.id_uzivatel) }}" method="POST">
+                                {% for value in arr %}
+                                    <input type="radio" name="radio" value="{{ value }}">{{ value }}
+                                {% endfor %}
+                                <input type="submit" class="btn btn-success" value="Upravit hodnost" id="login-btn">
+                            </form>
+                        <td class ="text-center"><a href="{{ makeURL("user","deleteUser",value.id_uzivatel) }}">Smazat uživatele</a></td>
                     </tr>
                     {% endfor %}
 

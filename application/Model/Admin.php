@@ -87,13 +87,40 @@ class Admin extends Model
     }
 
     function getOtherUsers(){
-        $query = $this->db->prepare('SELECT jmeno, prijmeni, hodnost
+        $query = $this->db->prepare('SELECT id_uzivatel, jmeno, prijmeni, hodnost
                                       FROM  uzivatel
                                       WHERE  hodnost >= 2
                                       ORDER BY hodnost DESC ');
         $query->execute();
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    function changeRank($cislo,$id){
+        $id = htmlspecialchars($id);
+        $cislo = htmlspecialchars($cislo);
+        $query = $this->db->prepare('UPDATE uzivatel SET hodnost = :hodnost WHERE id_uzivatel = :id');
+        $query->bindParam(':id',$id);
+        $query->bindParam(':hodnost',$cislo);
+        $query->execute();
+    }
+
+    function deleteUser($id){
+        $id = htmlspecialchars($id);
+        $query = $this->db->prepare('DELETE FROM uzivatel WHERE id_uzivatel= :id');
+        $query->bindParam(':id',$id);
+        $query->execute();
+    }
+
+  /*  function getRank($id){
+        $id = htmlspecialchars($id);
+        $query = $this->db->prepare('SELECT  hodnost
+                                      FROM  uzivatel
+                                      WHERE  id_uzivatel = :id');
+        $query->bindParam(':id',$id);
+        $query->execute();
+        return $query->fetchA(\PDO::FETCH_ASSOC);
+
+    } */
  /*  function getAll(){
        $query = $this->db->prepare('SELECT
                                     p.id_uzivatel,p.nazev,h.originalita,h.tema,h.tech_kvalita,h.jazyk_kvalita, h.doporuceni

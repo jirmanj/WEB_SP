@@ -314,9 +314,9 @@ class UserController extends Controller
             $new_review = $_POST['recenzent'];
             if(isset($_REQUEST['param'])){
                 $this->admin->setNewReview($new_review,$_REQUEST['param']);
-                $this->redirect("Uživateli přidán článek k ohodnocení.","user","index", "success");
+                $this->redirect("Uživateli přidán článek k ohodnocení.","user","articles", "success");
             }else {
-                $this->redirect("Nic nezadáno.","user","index", "danger");
+                $this->redirect("Nic nezadáno.","user","articles", "danger");
             }
         }
     }
@@ -325,9 +325,9 @@ class UserController extends Controller
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
                 $this->admin->deleteReview($_REQUEST['param']);
-                $this->redirect("Recenze úspěšně odebrána.","user","index", "success");
+                $this->redirect("Recenze úspěšně odebrána.","user","articles", "success");
             }else {
-                $this->redirect("Nic nezadáno.","user","index", "danger");
+                $this->redirect("Nic nezadáno.","user","articles", "danger");
             }
         }else{
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
@@ -339,15 +339,15 @@ class UserController extends Controller
             if(isset($_REQUEST['param'])){
                 $array = $this->admin->getSmallReview($_REQUEST['param']);
                 if($array['soucet_uzivatelu'] == 0){
-                    $this->redirect("Článek nelze zamítnout, nikdo ho zatím neohodnotil.","user","index", "danger");
+                    $this->redirect("Článek nelze zamítnout, nikdo ho zatím neohodnotil.","user","articles", "danger");
                 }else{
                     $this->admin->rejectArticle($_REQUEST['param']);
                     $this->admin->deleteReview($_REQUEST['param']);
-                    $this->redirect("Článek byl úspěšně zamítnut.","user","index", "success");
+                    $this->redirect("Článek byl úspěšně zamítnut.","user","articles", "success");
                 }
 
             }else {
-                $this->redirect("Nic nezadáno.","user","index", "danger");
+                $this->redirect("Nic nezadáno.","user","articles", "danger");
             }
         }else{
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
@@ -363,10 +363,48 @@ class UserController extends Controller
                 }else{
                     $avg = $array['soucet_hodnoceni']/$array['soucet_uzivatelu'];
                     $this->admin->setAVG($_REQUEST['param'],$avg);
-                    $this->redirect("Článek úspěšně publikován.","user","index", "success");
+                    $this->redirect("Článek úspěšně publikován.","user","articles", "success");
                 }
             }else {
-                $this->redirect("Nic nezadáno.","user","index", "danger");
+                $this->redirect("Nic nezadáno.","user","articles", "danger");
+            }
+        }else{
+            $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
+        }
+    }
+
+    function editUser(){
+        if($_SESSION['user']['hodnost'] == 1){
+            if(isset($_REQUEST['param'])){
+                if(isset($_POST['radio'])){
+                    switch($_POST['radio']){
+                        case "Autor": $number = 3;
+                                        break;
+                        case "Recenzent": $number = 2;
+                                            break;
+                        case "Zablokovaný": $number = 4;
+                        break;
+                    }
+                    $this->admin->changeRank($number,$_REQUEST['param']);
+                    $this->redirect("Hodnost uživatele úspěšně změněna.","user","users", "success");
+                }else{
+                    $this->redirect("Žádné tlačítko nezadáno.","user","users", "danger");
+                }
+            }else {
+                $this->redirect("Nic nezadáno.","user","users", "danger");
+            }
+        }else{
+            $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
+        }
+    }
+
+    function deleteUser(){
+        if($_SESSION['user']['hodnost'] == 1){
+            if(isset($_REQUEST['param'])){
+                $this->admin->deleteUser($_REQUEST['param']);
+
+            }else {
+                $this->redirect("Nic nezadáno.","user","users", "danger");
             }
         }else{
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");

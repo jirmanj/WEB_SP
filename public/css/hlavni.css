@@ -1,0 +1,36 @@
+#web{
+    font-weight: bold;
+    font-size: large;
+    color:lightgray;
+}
+#web:hover{
+    font-weight: bold;
+    font-size: large;
+    color:gray;
+}
+.nav_text{
+    font-size: larger !important;
+}
+#nav_hodnost{
+    padding-left: 15px;
+}
+#nav_button{
+    margin-left: 15px;
+}
+#registrace{
+    padding-right:10px;
+    text-decoration: none;
+}
+#registrace:hover{
+    padding-right:10px;
+    color: white;
+    text-decoration: none;
+}
+.prihlaseni {
+    padding-left: 45px !important;
+}
+@media screen and (max-width: 750px) {
+    #small_btn{
+        margin-top: 5px !important;
+    }
+}

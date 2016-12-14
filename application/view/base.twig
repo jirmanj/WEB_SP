@@ -43,22 +43,22 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="{{ makeURL("home","index") }}">WEB</a>
+              <a class="navbar-brand" href="{{ makeURL("home","index") }}" id="web">WEB</a>
           </div>
           <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                  <li><a href="{{ makeURL("home","index") }}">Home</a></li>
+                  <li><a href="{{ makeURL("home","index") }}" class="nav_text">Home</a></li>
                   {% if session.user is not null%}
                       {% if session.user.hodnost == 1 %}
                           <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administrace<span class="caret"></span></a>
+                              <a href="#" class="dropdown-toggle nav_text" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administrace<span class="caret"></span></a>
                               <ul class="dropdown-menu">
-                                  <li><a href="{{ makeURL("user","articles") }}">Správa Příspěvků</a></li>
-                                  <li><a href="{{ makeURL("user","users") }}">Správa uživatelů</a></li>
+                                  <li><a href="{{ makeURL("user","articles") }}" class="nav_text">Správa článků</a></li>
+                                  <li><a href="{{ makeURL("user","users") }}" class="nav_text">Správa uživatelů</a></li>
                               </ul>
                           </li>
                       {% else %}
-                          <li><a href="{{ makeURL("user","index") }}">Administrace</a></li>
+                          <li><a href="{{ makeURL("user","index") }}" class="nav_text">Administrace</a></li>
                       {% endif %}
 
                   {% endif %}
@@ -66,7 +66,7 @@
               </ul>
               <ul class="nav navbar-nav navbar-right">
                   {% if session.user is not null %}
-                  <li><a href="">{{  session.user.jmeno }} {{ session.user.prijmeni }}
+                  <li><a href="" id="nav_hodnost" class="nav_text">{{  session.user.jmeno }} {{ session.user.prijmeni }}
                           {% if session.user.hodnost == 3 %}
                               (Autor)
                           {% elseif session.user.hodnost == 2 %}
@@ -76,69 +76,25 @@
                           {% endif %}
 
                       </a></li>
-                  <a href="{{ makeURL("user","logout") }}"><button class="btn btn-danger navbar-btn">Odhlásit se</button></a>
+                  <a href="{{ makeURL("user","logout") }}" class="btn btn-default navbar-btn" id="nav_button">Odhlásit se</a>
               </ul>
               {%  else %}
               <ul class="nav navbar-nav navbar-right">
-                  <form class="navbar-form" action="{{ makeURL("register","login") }}" method="POST">
+                  <form class="navbar-form prihlaseni" action="{{ makeURL("register","login") }}" method="POST">
                       <div class="form-group .col-xs-6 .col-sm-3">
-                          <a href ="{{ makeURL("register","index") }} " class =".navbar-text">Registrace</a>
+                          <a href ="{{ makeURL("register","index") }} " class="nav_text" id="registrace">Registrace</a>
                       </div>
                       <div class="form-group">
                           <input type="email" name="visitor[email]" placeholder="Email" class="form-control" required>
                       </div>
                           <input type="password" name="visitor[heslo]" placeholder="Heslo" class="form-control" required>
-                      <button type="submit" class="btn btn-success">Přihlásit se</button>
+                      <button type="submit" class="btn btn-success" id="small_btn">Přihlásit se</button>
                   </form>
                   {% endif %}
               </ul>
           </div><!--/.nav-collapse -->
       </div>
   </nav>
-
-
- <!--- <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">WEB</a>
-      </div>
-      <ul class="nav navbar-nav">
-        <li><a href="{{ makeURL("home","index") }}">Home</a></li>
-          {% if session.user is not null%}
-            <li><a href="{{ makeURL("user","index") }}">Administrace</a></li>
-          {% endif %}
-      </ul>
-
-          {% if session.user is not null %}
-         <ul class="nav navbar-nav navbar-right col-md-3">
-            <li><a href="">{{  session.user.jmeno }} {{ session.user.prijmeni }}
-                {% if session.user.hodnost == 3 %}
-                    (Autor)
-                    {% elseif session.user.hodnost == 2 %}
-                    (Recenzent)
-                    {% else %}
-                    (Admin)
-                    {% endif %}
-
-                </a></li>
-            <a href="{{ makeURL("user","logout") }}"><button class="btn btn-danger navbar-btn">Odhlásit se</button></a>
-         </ul>
-          {%  else %}
-          <ul class="nav navbar-nav navbar-right col-md-6">
-            <form class="navbar-form navbar-right" action="{{ makeURL("register","login") }}" method="POST">
-              <a href ="{{ makeURL("register","index") }}">Registrace</a>
-              <div class="form-group">
-                <input type="email" name="visitor[email]" placeholder="Email" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <input type="password" name="visitor[heslo]" placeholder="Heslo" class="form-control" required>
-              </div>
-              <button type="submit" class="btn btn-success">Přihlásit se</button>
-            </form>
-          </ul>
-          {% endif %}
-    </div>
-  </nav> ---->
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
@@ -160,9 +116,9 @@
 
 
     <hr>
-  <div class="">
+  <div class="text-center">
       <footer>
-        <p>&copy; Jan Jirman</p>
+        <p class="nav_text">&copy; Jan Jirman</p>
       </footer>
     </div> <!-- /container -->
 
