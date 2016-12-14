@@ -64,7 +64,8 @@ class Application
     }
 
     /**
-     * Get and split the URL
+     * Funkce rozdělí URL
+     *
      */
     private function splitUrl()
     {
@@ -86,114 +87,5 @@ class Application
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-        /*if(isset($_REQUEST['page'])){
-        $this->url_action = $_REQUEST['page'];
-        }
-        if(isset($_REQUEST['action'])){
-            $this->url_action = $_REQUEST['action'];
-        }
-        if(isset($_REQUEST['param'])){
-            $this->url_params = $_REQUEST['param'];
-        }
-
-
-    } */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       /* if (isset($_SERVER['PATH_INFO'])) {
-            echo "PATH";
-            $this->url_controller = null;
-        } else {
-            if (strlen($_SERVER["QUERY_STRING"]) > 0) {
-                echo "QUERY    ";
-                $url = $_SERVER["QUERY_STRING"];
-                if (strpos($url, "page=")) {
-                    echo "ano (y)";
-                    foreach ($this->urls as $value) {
-                        if (strpos($_REQUEST['page'], $value)) {
-                            echo "ano";
-                            $this->url_controller = $value;
-                            break;
-                        }else{
-                            $this->url_controller = null;
-                        }
-                    }
-                } else {
-                    $this->url_controller = null;
-                }
-                if (isset($_REQUEST['action'])) {
-                    $this->url_action = $_REQUEST['action'];
-                }
-                if (isset($_REQUEST['param'])) {
-                    $this->url_params = $_REQUEST['param'];
-                }
-            }
-        }
-    } */
-
-
-    /*     >0 || strlen($_SERVER["QUERY_STRING"])>0) {
-         echo "ANO";
-         echo "<br>";
-         echo $_SERVER['PATH_INFO'];
-         echo "<br>";
-         echo $_SERVER["QUERY_STRING"];
-         echo "<br>";
-     }
-
- }
-
- /*    if(isset($_REQUEST['page'])){
-         $this->url_controller = $_REQUEST['page'];
-     }else{
-         if($_SERVER["QUERY_STRING"] == null) {
-                 $this->url_controller = null;
-         }else{
-             if(strpos($_SERVER["QUERY_STRING"], 'page=')){
-                 echo $_SERVER["QUERY_STRING"];
-                 echo "ANO";
-                 $this->url_controller = "home";
-             }else{
-                 echo $_SERVER["QUERY_STRING"];
-                 echo "NE";
-                 $this->url_controller = "error";
-             }
-         }
-     }
-     if(isset($_REQUEST['action'])){
-         $this->url_action = $_REQUEST['action'];
-     }
-     if(isset($_REQUEST['param'])){
-         $this->url_params = $_REQUEST['param'];
-     } */
 
 }

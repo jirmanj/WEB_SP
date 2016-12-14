@@ -9,10 +9,13 @@ use Mini\Core\Model;
  */
 class Reviewer extends Model
 {
-
+    /***********************************************************
+     * Funkce získá všechny články, které nebyli ohodnocený a jsou pro daného recenzenta
+     * @return pole výsledků
+     */
     function getYourWork(){
         $id = $_SESSION['user']['id_uzivatel'];
-        $query = $this->db->prepare('SELECT h.id_hodnoceni, p.nazev, concat(u.jmeno, \' \', u.prijmeni) AS autor
+        $query = $this->db->prepare('SELECT h.id_hodnoceni, p.nazev
                                       FROM  prispevky p, hodnoceni h, uzivatel u
                                       WHERE h.id_prispevky = p.id_prispevky
                                       AND   h.id_uzivatel = :id
@@ -24,6 +27,11 @@ class Reviewer extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce získá konkrétní článek
+     * @param $param id hodnocení
+     * @return pole výsledku
+     */
     function getAuthorsPost($param){
         $id_hodnoceni = $param;
         $id = $_SESSION['user']['id_uzivatel'];
@@ -35,6 +43,11 @@ class Reviewer extends Model
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Uložení nové rezence
+     * @param $new_review pole potřebných atributů nové recenze
+     * @param $param id hodnoceni
+     */
     function setReview($new_review, $param){
         $param = htmlspecialchars($param);
         $originalita = htmlspecialchars($new_review['originalita']);
@@ -62,6 +75,26 @@ class Reviewer extends Model
         $query->execute();
 
 
+    }
+
+    /***********************************************************
+     * Získání doposud ohodnocených článků, avšak adminem nepotvrzených
+     * @return pole výsledků
+     */
+    function getYourReviews(){
+        $id = $_SESSION['user']['id_uzivatel'];
+        $query = $this->db->prepare('SELECT h.id_hodnoceni, p.nazev
+                                      FROM  prispevky p, hodnoceni h, uzivatel u
+                                      WHERE h.id_prispevky = p.id_prispevky
+                                      AND   h.id_uzivatel = :id
+                                      AND   u.id_uzivatel = h.id_uzivatel
+                                      AND   h.doporuceni IS NOT NULL
+                                      AND   p.posouzeno IS NULL
+                                      AND   p.id_uzivatel IS NOT NULL
+                                      ORDER BY p.nazev ASC');
+        $query->bindParam(':id',$id);
+        $query->execute();
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }

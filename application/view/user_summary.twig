@@ -46,26 +46,46 @@
         </div>
     {% else %}
         <div class="container">
-            <h2>Seznam článků</h2>
-        <div class = "table-responsive table-bordered">
-            <table class="table">
+            <h2>Seznam článků k ohodnocení</h2>
+        <div class = "table-responsive col-md-6">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Název článku</th>
-                        <th>Autor</th>
-                        <th>Ohodnotit</th>
+                        <th class="col-md-4">Název článku</th>
+                        <th class="col-md-2">Ohodnotit článek</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for value in pole %}
+                {% for value in before_arr %}
                     <tr>
                         <td>{{ value.nazev }}</td>
-                        <td>{{ value.autor }}</td>
                         <td><a href="{{ makeURL("user","evaluate",value.id_hodnoceni )}}">Ohodnotit</a></td>
                     </tr>
                 {% endfor %}
                  </tbody>
             </table>
+        </div>
+        </div>
+        <div class="container">
+            <h2>Seznam ohodnocených článků čekajících na potvrzení</h2>
+            <div class = "table-responsive col-md-6">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="col-md-4">Název článku</th>
+                        <th class="col-md-2">Změnit hodnocení</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for value in after_arr %}
+                        <tr>
+                            <td>{{ value.nazev }}</td>
+                            <td><a href="{{ makeURL("user","evaluate",value.id_hodnoceni )}}">Změnit</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

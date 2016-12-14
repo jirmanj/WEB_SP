@@ -58,7 +58,7 @@
                               </ul>
                           </li>
                       {% else %}
-                          <li><a href="{{ makeURL("user","index") }}" class="nav_text">Administrace</a></li>
+                          <li><a href="{{ makeURL("user","index") }}" class="nav_text">Služby</a></li>
                       {% endif %}
 
                   {% endif %}
@@ -81,7 +81,7 @@
               {%  else %}
               <ul class="nav navbar-nav navbar-right">
                   <form class="navbar-form prihlaseni" action="{{ makeURL("register","login") }}" method="POST">
-                      <div class="form-group .col-xs-6 .col-sm-3">
+                      <div class="form-group">
                           <a href ="{{ makeURL("register","index") }} " class="nav_text" id="registrace">Registrace</a>
                       </div>
                       <div class="form-group">

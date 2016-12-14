@@ -9,7 +9,10 @@ use Mini\Core\Model;
  */
 class Admin extends Model
 {
-
+    /***********************************************************
+     * Funkce získa autory zatím neposouzených článku
+     * @return pole výsledků
+     */
     function getAuthorOfArticle(){
         $query = $this->db->prepare('SELECT p.id_prispevky, p.nazev,concat(u.jmeno, \' \', u.prijmeni) AS autor
                                       FROM uzivatel u, prispevky p
@@ -19,6 +22,10 @@ class Admin extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce vrátí pole recenzentů.
+     * @return pole výsledků
+     */
     function getReviewers(){
 
         $query = $this->db->prepare('SELECT id_uzivatel,jmeno,prijmeni,concat(jmeno, \' \',prijmeni) AS cele_jmeno
@@ -28,6 +35,11 @@ class Admin extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce získá všechny recenze i s hodnocením
+     * @param $prispevek pole potřebných atributů
+     * @return pole výsledků
+     */
     function getReviews($prispevek){
         $id = htmlspecialchars($prispevek['id_prispevky']);
         $query = $this->db->prepare('SELECT h.id_hodnoceni, concat(u.jmeno, \' \', u.prijmeni) AS recenzent,p.id_prispevky,
@@ -41,15 +53,24 @@ class Admin extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Zapíše novou recenzi
+     * @param $new_review pole s potřebnými atributy
+     * @param $id id článku (id_prispevky)
+     */
     function setNewReview($new_review, $id){
         $id_p = htmlspecialchars($id);
-        $id_u = $new_review['id'];
+        $id_u = htmlspecialchars($new_review['id']);
         $query = $this->db->prepare('INSERT INTO hodnoceni (id_uzivatel,id_prispevky) VALUES (:id_u,:id_p)');
         $query->bindParam(':id_p',$id_p);
         $query->bindParam(':id_u',$id_u);
         $query->execute();
     }
 
+    /***********************************************************
+     * Funkce odstraní rezenci
+     * @param $id id hodnoceni
+     */
     function deleteReview($id){
         $id = htmlspecialchars($id);
         $query = $this->db->prepare('DELETE FROM hodnoceni WHERE id_hodnoceni= :id OR id_prispevky= :id');
@@ -57,6 +78,10 @@ class Admin extends Model
         $query->execute();
     }
 
+    /***********************************************************
+     * Funkce zamítne článek
+     * @param $id idi článku (id_prispevky)
+     */
     function rejectArticle($id){
         $id = htmlspecialchars($id);
         $query = $this->db->prepare('UPDATE prispevky SET posouzeno = 0 WHERE id_prispevky = :id');
@@ -66,7 +91,11 @@ class Admin extends Model
     }
 
 
-
+    /***********************************************************
+     * Funkce získá potřebná čísla pro další práci (průmer)
+     * @param $id id článku (id_prispevky)
+     * @return pole výsledků
+     */
     function getSmallReview($id){
         $id = htmlspecialchars($id);
         $query = $this->db->prepare('SELECT COUNT(id_uzivatel) AS soucet_uzivatelu, SUM((originalita+tema+tech_kvalita+jazyk_kvalita+doporuceni)/5) AS soucet_hodnoceni
@@ -76,6 +105,11 @@ class Admin extends Model
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce nastaví průměr
+     * @param $id id článku (id_příspěvky)
+     * @param $prumer průměr
+     */
     function setAVG($id, $prumer){
         $id = htmlspecialchars($id);
         $prumer = htmlspecialchars($prumer);
@@ -86,6 +120,10 @@ class Admin extends Model
 
     }
 
+    /***********************************************************
+     * Získá všechny uživatele, kteří jsou hodností pod ním
+     * @return pole výsledků
+     */
     function getOtherUsers(){
         $query = $this->db->prepare('SELECT id_uzivatel, jmeno, prijmeni, hodnost
                                       FROM  uzivatel
@@ -95,6 +133,11 @@ class Admin extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce změní konkrétnímu uživateli hodnost
+     * @param $cislo číslo hodnosti
+     * @param $id id uživatele
+     */
     function changeRank($cislo,$id){
         $id = htmlspecialchars($id);
         $cislo = htmlspecialchars($cislo);
@@ -104,54 +147,29 @@ class Admin extends Model
         $query->execute();
     }
 
+    /***********************************************************
+     * Funkce odstraní uživatele + s ním příspěvky a hodnocení
+     * @param $id id uživatele
+     */
     function deleteUser($id){
         $id = htmlspecialchars($id);
+        $query = $this->db->prepare('SELECT id_prispevky FROM prispevky WHERE id_uzivatel= :id');
+        $query->bindParam(':id',$id);
+        $query->execute();
+        $arr = $query->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($arr as $item) {
+            $query = $this->db->prepare('DELETE FROM hodnoceni WHERE id_prispevky= :id');
+            $query->bindParam(':id',$item['id_prispevky']);
+            $query->execute();
+        }
         $query = $this->db->prepare('DELETE FROM uzivatel WHERE id_uzivatel= :id');
         $query->bindParam(':id',$id);
         $query->execute();
-    }
-
-  /*  function getRank($id){
-        $id = htmlspecialchars($id);
-        $query = $this->db->prepare('SELECT  hodnost
-                                      FROM  uzivatel
-                                      WHERE  id_uzivatel = :id');
+        $query = $this->db->prepare('DELETE FROM prispevky WHERE id_uzivatel= :id');
         $query->bindParam(':id',$id);
         $query->execute();
-        return $query->fetchA(\PDO::FETCH_ASSOC);
-
-    } */
- /*  function getAll(){
-       $query = $this->db->prepare('SELECT
-                                    p.id_uzivatel,p.nazev,h.originalita,h.tema,h.tech_kvalita,h.jazyk_kvalita, h.doporuceni
-                                    
-                                    FROM hodnoceni h RIGHT JOIN prispevky p 
-                                    ON p.id_prispevky = h.id_prispevky
-                                    ORDER BY p.id_prispevky ASC
-                                    ');
-       $query->execute();
-       return $query->fetchAll(\PDO::FETCH_ASSOC);
-
-   } */
-
-
-  /*  function getReviewsForArticle($id_prispevky){
-        $query = $this->db->prepare('SELECT u.jmeno, u.prijmeni, concat(u.jmeno, \' \', u.prijmeni) AS recenzent
-                                      FROM uzivatel u, prispevky p
-                                      WHERE p.id_prispevky = :id
-                                      AND u.hodnost = 2
-                                      AND u.id_uzivatel NOT IN (SELECT h.id_uzivatel FROM hodnoceni h WHERE :id = h.id_prispevky);
-                                      ORDER BY p.nazev ASC');
-        $query->bindParam(':id',$id_prispevky);
-        $query->execute();
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
-
     }
-    function getTry($id_prispevky){
-        $query = $this->db->prepare('SELECT h.id_uzivatel FROM hodnoceni h WHERE :id = h.id_prispevky');
-        $query->bindParam(':id',$id_prispevky);
-        $query->execute();
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
-    } */
+
+
 
 }

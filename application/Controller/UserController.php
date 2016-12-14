@@ -17,28 +17,38 @@ use Mini\Model\User;
 
 class UserController extends Controller
 {
-    private $reviewer;
-    private $admin;
+    private $user;
     /**
-     * PAGE: index
-     * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
+     * @var Reviewer instance s určitými metodami pro praci s databazí
      */
+    private $reviewer;
+    /**
+     * @var Admin instance s určitými metodami pro praci s databazí
+     */
+    private $admin;
 
+    /**
+     * UserController constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->user = new User();
         $this->reviewer = new Reviewer();
         $this->admin = new Admin();
 
     }
 
-
+    /*************************************************************
+     * Funkce vykreslí hlavní stránku "Služby" pro uživatele s hodností "recenzent","autor".
+     */
     public function index()
     {
         if(isset($_SESSION['user'])){
             switch($_SESSION['user']['hodnost']){
-                case 2: $pole = $this->reviewer->getYourWork();
-                        echo $this->twig->render('user_summary.twig', ['pole' => $pole]);
+                case 2: $before = $this->reviewer->getYourWork();
+                        $after = $this->reviewer->getYourReviews();
+                        echo $this->twig->render('user_summary.twig', ['before_arr' => $before, 'after_arr' => $after]);
                         break;
                 case 3: $pole = $this->getPosts();
                         echo $this->twig->render('user_summary.twig', ['pole' => $pole]);
@@ -50,28 +60,6 @@ class UserController extends Controller
         }
     }
 
-    public function articles(){
-        $article = $this->admin->getAuthorOfArticle();
-        $reviewers = $this->admin->getReviewers();
-        $i = 0;
-        foreach($article as $value){
-            $review[$i]=$this->admin->getReviews($value);
-            $i++;
-        }
-        if(empty($review)){
-            echo $this->twig->render('user_articles.twig', ['article' => $article,
-                'reviewers' => $reviewers]);
-        }else{
-            echo $this->twig->render('user_articles.twig', ['article' => $article,
-                'reviewers' => $reviewers,
-                'review' => $review]);
-        }
-    }
-
-    public function users(){
-        $array = $this->admin->getOtherUsers();
-        echo $this->twig->render('user_users.twig', ['array' => $array]);
-    }
 
 
 
@@ -81,6 +69,10 @@ class UserController extends Controller
 //************************************************************************************************
 //********************************** twig "3" methods ********************************************
 //************************************************************************************************
+
+    /*************************************************************
+     * Funkce vykreslí stránku, kde autor může přidat nový příspěvek.
+     */
     public function create(){
         if(isset($_SESSION['user'])){
             if($_SESSION['user']['hodnost'] == 3){
@@ -94,6 +86,9 @@ class UserController extends Controller
         }
     }
 
+    /*************************************************************
+     * Funkce vykreslí stránku, kde může uživatel editovat článek
+     */
     public function edit(){
         if(isset($_SESSION['user'])){
             if($_SESSION['user']['hodnost'] == 3){
@@ -107,7 +102,9 @@ class UserController extends Controller
             }
         }
     }
-
+    /*************************************************************
+     * Funkce vykreslí stránku, kde může článek vymazat
+     */
     public function delete(){
         if(isset($_SESSION['user'])) {
             if ($_SESSION['user']['hodnost'] == 3) {
@@ -126,6 +123,9 @@ class UserController extends Controller
 //************************************************************************************************
 //********************************** twig "2" methods ********************************************
 //************************************************************************************************
+    /*************************************************************
+     * Funkce vykreslí stránku, kde reneczent může ohodnotit článek
+     */
     public function evaluate(){
         if(isset($_SESSION['user'])) {
             if ($_SESSION['user']['hodnost'] == 2) {
@@ -141,21 +141,58 @@ class UserController extends Controller
     }
 
 
+//************************************************************************************************
+//********************************** twig "1" methods ********************************************
+//************************************************************************************************
+    /*************************************************************
+     * Funkce vykreslí stránku, kde má admin přehled o příspěvcích
+     */
+    public function articles(){
+        $article = $this->admin->getAuthorOfArticle();
+        $reviewers = $this->admin->getReviewers();
+        $i = 0;
+        foreach($article as $value){
+            $review[$i]=$this->admin->getReviews($value);
+            $i++;
+        }
+        if(empty($review)){
+            echo $this->twig->render('user_articles.twig', ['article' => $article,
+                'reviewers' => $reviewers]);
+        }else{
+            echo $this->twig->render('user_articles.twig', ['article' => $article,
+                'reviewers' => $reviewers,
+                'review' => $review]);
+        }
+        $_SESSION['info'] = null;
+    }
+
+    /*************************************************************
+     * Funkce vykreslí stránku, kde má admin přehled o všech uživatelích
+     */
+    public function users(){
+        $array = $this->admin->getOtherUsers();
+        echo $this->twig->render('user_users.twig', ['array' => $array]);
+        $_SESSION['info'] = null;
+    }
+
+
 
 //************************************************************************************************
 //******************************* "3" functional methods *****************************************
 //************************************************************************************************
+    /*************************************************************
+     * Funkce vytvoří článek
+     */
     function createArticle(){
         if(!isset($_POST['article'])){
             $this->redirect("Chyba při přenosu dat.","user","index", "danger");
         }else{
             $new_article = $_POST['article'];
-            $user = new User();
-            if(empty($user->sameText($new_article['text']))) {
-                $user->yourNewArticle($new_article);
+            if(empty($this->user->sameText($new_article['text']))) {
+                $this->user->yourNewArticle($new_article);
                 $file = $_FILES['file'];
                 if($file['size']>0){
-                    $this->work_with_file($file,$user,$new_article);
+                    $this->work_with_file($file,$new_article);
                 }else{
                     $this->redirect("Článek úspěšně uložen.","user","index","success");
                 }
@@ -165,23 +202,24 @@ class UserController extends Controller
             }
         }
     }
-
+    /*************************************************************
+     * Funkce edituje článek
+     */
     function editArticle(){
 
         if(!isset($_POST['article'])){
             $this->redirect("Chyba při přenosu dat.","user","index", "danger");
         }else{
             if(isset($_REQUEST['param'])){
-                $user = new User();
-                if(empty($user->isYourArticle($_REQUEST['param']))) {
+                if(empty($this->user->isYourArticle($_REQUEST['param']))) {
                     $this->redirect("Nenalezen žádný váš článek.","user","index", "danger");
                 }else {
                     $new_article = $_POST['article'];
-                    $user->yourEditedArticle($new_article,$_REQUEST['param']);
+                    $this->user->yourEditedArticle($new_article,$_REQUEST['param']);
                     if(isset($_POST['none'])){
-                        $pole = $user->getFile($_REQUEST['param']);
-                        $user->yourDeletedFile($_REQUEST['param']);
-                        $pole1 = $user->isLastLocalFile($pole);
+                        $pole = $this->user->getFile($_REQUEST['param']);
+                        $this->user->yourDeletedFile($_REQUEST['param']);
+                        $pole1 = $this->user->isLastLocalFile($pole);
                         if(empty($pole1)){
                             unlink($pole['soubor']);
                         }
@@ -190,7 +228,7 @@ class UserController extends Controller
                     }else{
                         $file = $_FILES['file'];
                         if($file['size']>0){
-                            $this->work_with_file($file,$user,$new_article);
+                            $this->work_with_file($file,$new_article);
                         }else{
                             $this->redirect("Článek úspěšně změněn.","user","index","success");
                         }
@@ -204,19 +242,20 @@ class UserController extends Controller
             }
         }
     }
-
+    /*************************************************************
+     * Funkce maže článek
+     */
     function deleteArticle(){
         if(!isset($_POST['article'])){
             $this->redirect("Chyba při přenosu dat.","user","index", "danger");
         }else{
             if(isset($_REQUEST['param'])){
-                $user = new User();
-                if(empty($user->isYourArticle($_REQUEST['param']))) {
+                if(empty($this->user->isYourArticle($_REQUEST['param']))) {
                     $this->redirect("Nenalezen žádný váš článek.","user","index", "danger");
                 }else {
-                    $pole = $user->getFile($_REQUEST['param']);
-                    $user->yourDeletedArticle($_REQUEST['param']);
-                    $pole1 = $user->isLastLocalFile($pole);
+                    $pole = $this->user->getFile($_REQUEST['param']);
+                    $this->user->yourDeletedArticle($_REQUEST['param']);
+                    $pole1 = $this->user->isLastLocalFile($pole);
                     if(empty($pole1)){
                         unlink($pole['soubor']);
                     }
@@ -229,7 +268,13 @@ class UserController extends Controller
             }
         }
     }
-    private function work_with_file($file, $user, $new_article){
+
+    /**
+     * Funkce potřebná pro práci se souborem
+     * @param $file soubor
+     * @param $new_article pole s potřebnými atributy
+     */
+    private function work_with_file($file, $new_article){
 
         $target_dir = ROOT . "public".DIRECTORY_SEPARATOR."file".DIRECTORY_SEPARATOR ."".$_SESSION['user']['id_uzivatel'].DIRECTORY_SEPARATOR;
         if (!file_exists($target_dir)) {
@@ -237,7 +282,7 @@ class UserController extends Controller
         }
         $target_file = $target_dir . basename($file["name"]);
         if (file_exists($target_file)) {
-            $user->yourFileToArticle($new_article,$target_file);
+            $this->user->yourFileToArticle($new_article,$target_file);
             $this->redirect("Článek uložen s již existující souborem na serveru. Další úpravy článku jsou možné v Administraci.", "user","index", "success");
             $uploadOk = 0;
         }
@@ -247,7 +292,7 @@ class UserController extends Controller
             $this->redirect("Článek uložen bez souboru, jelikož soubor není v podporovaném formátu (Pouze PDF). Další úpravy článku jsou možné v Administraci.", "user","index", "danger");
         }else{
             if (move_uploaded_file($file["tmp_name"], $target_file)) {
-                $user->yourFileToArticle($new_article,$target_file);
+                $this->user->yourFileToArticle($new_article,$target_file);
                 $this->redirect("Článek i soubor úspěšně přidán.","user","index","success");
             } else {
                 $this->redirect("Článek uložen bez souboru, nahrávání souboru selhalo. Další úpravy článku jsou možné v Administraci.","user","index","danger");
@@ -256,10 +301,11 @@ class UserController extends Controller
     }
 
 
-
+    /*************************************************************
+     * Funkce získa uživatelovo články
+     */
     private function getPosts(){
-        $user = new User();
-        $pole = $user->Yourposts();
+        $pole = $this->user->Yourposts();
         for($i=0;$i<count($pole);$i++){
             $cut = explode(DIRECTORY_SEPARATOR,$pole[$i]['soubor']);
             $pole[$i]['soubor_short'] = end($cut);
@@ -269,9 +315,11 @@ class UserController extends Controller
         }
         return $pole;
     }
+    /*************************************************************
+     * Funkce získa uživatelovo článek
+     */
     private function getPost($param){
-        $user = new User();
-        $pole = $user->yourPost($param);
+        $pole = $this->user->yourPost($param);
         $cut = explode(DIRECTORY_SEPARATOR,$pole['soubor']);
         $pole['soubor_short'] = end($cut);
         return $pole;
@@ -280,6 +328,9 @@ class UserController extends Controller
 //************************************************************************************************
 //******************************** "2" functional methods ****************************************
 //************************************************************************************************
+    /*************************************************************
+     * Funkce ohodnotí článek
+     */
     function reviewArticle(){
         if(!isset($_POST['review'])){
             $this->redirect("Chyba při přenosu dat.","user","index", "danger");
@@ -297,16 +348,9 @@ class UserController extends Controller
 //************************************************************************************************
 //******************************** "1" functional methods ****************************************
 //************************************************************************************************
-/*private function getInfoAboutArticles(){
-    $autori = $this->admin->getAuthorOfArticle();
-  //  print_r($autori);
-    for($i=0;$i<count($autori);$i++){
-        $autori[$i]['rezenzenti'] = $this->admin->getReviewsForArticle($autori[$i]['id_prispevky']);
-    }
-    print_r($autori);
-    die;
-} */
-
+    /*************************************************************
+     * Funkce nastaví článek recenzentovi
+     */
     function setArticleToReviewer(){
         if(!isset($_POST['recenzent'])){
             $this->redirect("Chyba při přenosu dat.","user","index", "danger");
@@ -320,7 +364,9 @@ class UserController extends Controller
             }
         }
     }
-
+    /*************************************************************
+     * Funkce vymaže recenzi
+     */
     function deleteReview(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
@@ -333,7 +379,9 @@ class UserController extends Controller
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
         }
     }
-
+    /*************************************************************
+     * Funkce získa zamítne článek
+     */
     function rejectArticle(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
@@ -353,13 +401,15 @@ class UserController extends Controller
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
         }
     }
-
+    /*************************************************************
+     * Funkce schválí článek a publikuje ho
+     */
     function shareArticle(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
                 $array = $this->admin->getSmallReview($_REQUEST['param']);
                 if($array['soucet_uzivatelu'] == 0){
-                    $this->redirect("Článek nelze publikovat, nikdo ho zatím neohodnotil.","user","index", "danger");
+                    $this->redirect("Článek nelze publikovat, nikdo ho zatím neohodnotil.","user","articles", "danger");
                 }else{
                     $avg = $array['soucet_hodnoceni']/$array['soucet_uzivatelu'];
                     $this->admin->setAVG($_REQUEST['param'],$avg);
@@ -372,7 +422,9 @@ class UserController extends Controller
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
         }
     }
-
+    /*************************************************************
+     * Funkce pro úpravu role uživatele
+     */
     function editUser(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
@@ -397,12 +449,14 @@ class UserController extends Controller
             $this->redirect("Nemáte oprávnění pro tuto akci.","home","index", "danger");
         }
     }
-
+    /*************************************************************
+     * Funkce vymaže uživatele
+     */
     function deleteUser(){
         if($_SESSION['user']['hodnost'] == 1){
             if(isset($_REQUEST['param'])){
                 $this->admin->deleteUser($_REQUEST['param']);
-
+                $this->redirect("Uživatel úspěšně vymazán.","user","users", "success");
             }else {
                 $this->redirect("Nic nezadáno.","user","users", "danger");
             }
@@ -419,7 +473,9 @@ class UserController extends Controller
 //************************************ complex methods *******************************************
 //************************************************************************************************
 
-
+    /*************************************************************
+     * Funkce ohlásí uživatele
+     */
     function logout(){
         unset($_SESSION['user']);
         $this->redirect("Úspěšně odhlášeno", "home", "index","success");

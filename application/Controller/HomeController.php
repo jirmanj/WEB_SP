@@ -15,20 +15,23 @@ use Mini\Model\User;
 
 class HomeController extends Controller
 {
-    private $user;
     /**
-     * PAGE: index
-     * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
+     * @var User instance s určitými metodami pro praci s databazí
      */
+    private $user;
 
-
+    /*************************************************************
+     * HomeController constructor.
+     */
     public function __construct()
     {
         parent::__construct();
         $this->user = new User();
     }
 
-
+    /*************************************************************
+     * Funkce zajišťující vykreslení hlavní stránky webu
+     */
     public function index()
     {
         // load views
@@ -40,6 +43,9 @@ class HomeController extends Controller
         $_SESSION['info'] = null;
     }
 
+    /*************************************************************
+     * Funkce zajišťující vykreslení konkrétního článku
+     */
     function article(){
         if(isset($_REQUEST['param'])){
             $array = $this->user->onePublicArticle($_REQUEST['param']);

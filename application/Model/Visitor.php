@@ -10,12 +10,11 @@ use Mini\Core\Model;
 class Visitor extends Model
 {
 
- /*   function vypisUzivatele(){
-        $query = $this->db->prepare('SELECT * FROM uzivatel');
-        $query->execute();
-        return $query->fetchAll();
-    } */
-
+    /***********************************************************
+     * Funkce najde email v tabulce pro daného uživatele - vrati email nebo nic.
+     * @param $email email
+     * @return pole vysledku
+     */
     function compareEmails($email){
         $email = htmlspecialchars($email);
         $query = $this->db->prepare('SELECT email FROM uzivatel WHERE email= :email');
@@ -25,6 +24,12 @@ class Visitor extends Model
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce najde email a heslo v tabulce pro daného uživatele - vrátí heslo a email, nebo nic.
+     * @param $email email
+     * @param $heslo heslo
+     * @return mixed pole vysledku
+     */
     function compareLogin($email, $heslo){
         $email = htmlspecialchars($email);
         $heslo = htmlspecialchars($heslo);
@@ -36,7 +41,11 @@ class Visitor extends Model
 
     }
 
-    function addVisitorToDB(array $visitor){
+    /***********************************************************
+     * Funkce vloží uživatele do databáze.
+     * @param $visitor pole potřebných atributů
+     */
+    function addVisitorToDB($visitor){
         $jmeno = htmlspecialchars($visitor['jmeno']);
         $prijmeni = htmlspecialchars($visitor['prijmeni']);
         $email = htmlspecialchars($visitor['email']);
@@ -51,6 +60,11 @@ class Visitor extends Model
         $query->execute();
     }
 
+    /***********************************************************
+     * Funkce vrátí informace o jednom daném uživateli
+     * @param $email email
+     * @return pole vysledku
+     */
     function getInfoAboutVisitor($email){
         $email = htmlspecialchars($email);
         $query = $this->db->prepare('SELECT * FROM uzivatel WHERE email= :email');
@@ -59,6 +73,18 @@ class Visitor extends Model
         return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
+    /***********************************************************
+     * Funkce vratí hodnost uzivatele, kterou momentálně má
+     * @param $visitors_email email uživatele
+     * @return pole výsledků
+     */
+    function getRank($email){
+        $email = htmlspecialchars($email);
+        $query = $this->db->prepare('SELECT hodnost FROM uzivatel WHERE email= :email');
+        $query->bindParam(':email', $email);
+        $query->execute();
+        return $query->fetch(\PDO::FETCH_ASSOC);
+    }
 
 
 

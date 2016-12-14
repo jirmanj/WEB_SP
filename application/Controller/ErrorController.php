@@ -19,7 +19,6 @@ class ErrorController extends Controller
      */
     public function index()
     {
-        // load views
         echo $this->twig->render('error.twig');
     }
 }
