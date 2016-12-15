@@ -2,7 +2,7 @@
 
 {% block information %}
     <h2>Vytvoření nového článku</h2>
-    <p>Zde můžete jednoduše vytvořit nový článek.</p>
+    <p class="info_up">Zde můžete jednoduše vytvořit nový článek.</p>
 {% endblock %}
 
 
@@ -13,15 +13,18 @@
                 <span class="input-group-addon">Název článku</span>
                 <input type="text" class="form-control" name="article[nazev]" placeholder="Název článku" required>
             </div>
-            <div class="input-group col-xs-8 ">
+            <div class="input-group col-xs-8 form_up">
                 <span class="input-group-addon">Samotný text</span>
                 <textarea class="form-control" rows="13" name="article[text]" required></textarea>
             </div>
-            <div class="input-group col-xs-6 ">
+            <div class="input-group col-xs-6 form_up">
                 <strong>Načíst PDF soubor (dobrovolné):</strong>
                 <input type="file" placeholder="PDF soubor" name="file">
             </div>
-            <input type="submit" class="btn btn-success" value="Přidat článek" id="login-btn">
+            <div class="form_up">
+                <input type="submit" class="btn btn-success" value="Přidat článek" id="login-btn">
+            </div>
+
         </form>
     </div>
 {% endblock %}

@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="{{ constant('URL') }}ks.ico">
 
     <title>Jumbotron Template for Bootstrap</title>
 
@@ -47,7 +47,7 @@
           </div>
           <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                  <li><a href="{{ makeURL("home","index") }}" class="nav_text">Home</a></li>
+                  <li><a href="{{ makeURL("home","index") }}" class="nav_text">Domů</a></li>
                   {% if session.user is not null%}
                       {% if session.user.hodnost == 1 %}
                           <li class="dropdown">
@@ -76,18 +76,18 @@
                           {% endif %}
 
                       </a></li>
-                  <a href="{{ makeURL("user","logout") }}" class="btn btn-default navbar-btn" id="nav_button">Odhlásit se</a>
+                  <a href="{{ makeURL("user","logout") }}" class="btn btn-success navbar-btn" id="nav_button">Odhlásit se</a>
               </ul>
               {%  else %}
               <ul class="nav navbar-nav navbar-right">
                   <form class="navbar-form prihlaseni" action="{{ makeURL("register","login") }}" method="POST">
-                      <div class="form-group">
-                          <a href ="{{ makeURL("register","index") }} " class="nav_text" id="registrace">Registrace</a>
-                      </div>
-                      <div class="form-group">
+                          <a class="nav_text" id="registrace" href ="{{ makeURL("register","index") }} "  >Registrace</a>
+                      <div class="form-group" >
                           <input type="email" name="visitor[email]" placeholder="Email" class="form-control" required>
                       </div>
+                      <div class="form-group " >
                           <input type="password" name="visitor[heslo]" placeholder="Heslo" class="form-control" required>
+                      </div>
                       <button type="submit" class="btn btn-success" id="small_btn">Přihlásit se</button>
                   </form>
                   {% endif %}
@@ -118,7 +118,7 @@
     <hr>
   <div class="text-center">
       <footer>
-        <p class="nav_text">&copy; Jan Jirman</p>
+        <p id="foot">&copy; Jan Jirman</p>
       </footer>
     </div> <!-- /container -->
 

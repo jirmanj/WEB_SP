@@ -2,7 +2,7 @@
 
 {% block information %}
     <h2>Mazání článku</h2>
-    <p>Zde můžete vymazat článek <strong>{{ pole.nazev }}</strong>.</p>
+    <p class="info_up">Zde můžete vymazat článek <strong>{{ pole.nazev }}</strong>.</p>
 {% endblock %}
 
 
@@ -17,7 +17,10 @@
                 <label for="comment">Samotný text:</label>
                 <textarea class="form-control" rows="13" name="article[text]"readonly>{{ pole.text }}</textarea>
             </div>
-            <input type="submit" class="btn btn-success" value="Vymazat článek" id="login-btn">
+             <div class="form_up">
+                 <input type="submit" class="btn btn-success" value="Vymazat článek" id="login-btn">
+             </div>
+
         </form>
     </div>
 {% endblock %}

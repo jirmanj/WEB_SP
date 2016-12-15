@@ -3,27 +3,29 @@
 {% block information %}
     <h1>Registrace!</h1>
     <form action="{{ makeURL("register","register") }}" method="POST">
-        <div class="input-group col-xs-4">
+        <div class="input-group col-xs-4 ">
             <span class="input-group-addon">Jméno</span>
             <input type="text" class="form-control" name="visitor[jmeno]" placeholder="Jméno nového uživatele" required>
         </div>
-        <div class="input-group col-xs-4">
+        <div class="input-group col-xs-4 form_up">
             <span class="input-group-addon">Příjmení</span>
             <input type="text" class="form-control" name="visitor[prijmeni]" placeholder="Příjmení nového uživatele" required>
         </div>
-        <div class="input-group col-xs-4 ">
+        <div class="input-group col-xs-4 form_up">
             <span class="input-group-addon">Email</span>
             <input  type="email" class="form-control " name="visitor[email]" placeholder="Email nového uživatele" required>
         </div>
-        <div class="input-group col-xs-4">
-            <span class="input-group-addon">Heslo</span>
+        <div class="input-group col-xs-4 form_up">
+            <span class="input-group-addon ">Heslo</span>
             <input type="password" class="form-control" name="visitor[heslo]" placeholder="Heslo nového uživatele" required>
         </div>
-        <div class="input-group col-xs-4">
-            <span class="input-group-addon">Znova heslo</span>
+        <div class="input-group col-xs-4 form_up">
+            <span class="input-group-addon ">Znova heslo</span>
             <input type="password" class="form-control" name="visitor[znovaheslo]" placeholder="Znovu heslo nového uživatele" required>
         </div>
-        <input type="submit" class="btn btn-success" value="Registrovat" id="login-btn">
+        <div class="form_up">
+            <input  type="submit" class="btn btn-success" value="Registrovat" id="login-btn">
+        </div>
 
     </form>
 {% endblock %}

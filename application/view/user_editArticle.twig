@@ -2,22 +2,22 @@
 
 {% block information %}
     <h2>Editace článku</h2>
-    <p>Zde můžete jednoduše editovat článek <strong>{{ pole.nazev }}</strong>.</p>
+    <p class="form_up">Zde můžete jednoduše editovat článek <strong>{{ pole.nazev }}</strong>.</p>
 {% endblock %}
 
 
 {% block content %}
     <div class="container">
         <form action="{{ makeURL("user","editArticle",pole.id_prispevky) }}" method="POST" enctype="multipart/form-data">
-            <div class="input-group col-xs-6">
+            <div class="input-group col-xs-6 ">
                 <span class="input-group-addon">Název článku</span>
                 <input type="text" class="form-control" name="article[nazev]" value="{{ pole.nazev }}" placeholder="Název článku" required>
             </div>
-            <div class="input-group col-xs-8 ">
+            <div class="input-group col-xs-8 form_up">
                 <span class="input-group-addon">Samotný text</span>
                 <textarea class="form-control" rows="13" name="article[text]" required>{{ pole.text }}</textarea>
             </div>
-            <div class="input-group col-xs-6 ">
+            <div class="input-group col-xs-6 form_up">
                 <label>Načíst PDF soubor (dobrovolné):</label>
                 <input type="file" placeholder="PDF soubor" name="file">
                 {% if pole.soubor_short %}
@@ -27,7 +27,10 @@
                 {% endif %}
 
             </div>
-            <input type="submit" class="btn btn-success" value="Upravit článek" id="login-btn">
+            <div class="form_up">
+                <input type="submit" class="btn btn-success" value="Upravit článek" id="login-btn">
+            </div>
+
         </form>
     </div>
 {% endblock %}

@@ -196,7 +196,7 @@ class User extends Model
      */
     function onePublicArticle($id){
         $id = htmlspecialchars($id);
-        $query = $this->db->prepare('SELECT p.id_prispevky, p.nazev, p.text,
+        $query = $this->db->prepare('SELECT p.id_prispevky, p.nazev, p.text, p.posouzeno,
                                      concat(u.jmeno, \' \', u.prijmeni) AS autor
                                      FROM prispevky p, uzivatel u WHERE id_prispevky = :id AND u.id_uzivatel = p.id_uzivatel');
         $query->bindParam(':id',$id);

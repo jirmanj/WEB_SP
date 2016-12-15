@@ -2,7 +2,7 @@
 
 {% block information %}
     <h2>Publikovaný článek konferenčního systému</h2>
-    <p>Nyní se nacházíte v <strong>{{ array.nazev }}</strong>.</p>
+    <p class="info_up">Nyní se nacházíte v <strong>{{ array.nazev }}</strong>.</p>
 {% endblock %}
 
 
@@ -11,8 +11,8 @@
         <div class="row">
              <h3>{{ array.nazev }}</h3>
             <p> {{ array.text }}</p>
-            <p><strong>Autor: </strong>{{ array.autor }}</p>
-            <p><strong>Hodnocení: </strong>{{ array.posouzeno }}</p>
+            <p><strong class="info_clanku">Autor: </strong>{{ array.autor }}</p>
+            <p><strong class="info_clanku">Hodnocení: </strong>{{ array.posouzeno }}</p>
         </div>
     </div>
 {% endblock %}

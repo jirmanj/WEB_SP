@@ -1,22 +1,22 @@
 {% extends 'base.twig' %}
 {% block information %}
     <h2>Hodnocení článku</h2>
-    <p>Zde můžete ohodnotit článek <strong>{{ pole.nazev }}.</strong></p>
+    <p class="info_up">Zde můžete ohodnotit článek <strong>{{ pole.nazev }}.</strong></p>
 {% endblock %}
 
 
 {% block content %}
     <div class="container">
-        <label>Název článku:</label>
+        <label class="info_up">Název článku:</label>
         <p>{{ pole.nazev }}</p>
-        <label>Samotný text:</label>
+        <label class="info_up">Samotný text:</label>
         <p>{{ pole.text }}</p>
         <hr>
 
 
 
         <form action="{{ makeURL("user","reviewArticle",pole.id_hodnoceni) }}" method="POST" enctype="multipart/form-data">
-            <div class="input-group col-xs-3">
+            <div class="input-group col-xs-3 ">
                 <span class="input-group-addon">Originalita</span>
                 <select name="review[originalita]" class="form-control" required>
                     <option disabled selected value> - Vyber možnost - </option>
@@ -27,7 +27,7 @@
                     <option value="5">5 = velice neoriginální</option>
                 </select>
             </div>
-            <div class="input-group col-xs-3">
+            <div class="input-group col-xs-3 form_up">
                 <span class="input-group-addon">Téma</span>
                 <select name="review[tema]" class="form-control" required>
                     <option disabled selected value> - Vyber možnost - </option>
@@ -38,7 +38,7 @@
                     <option value="5">5 = špatné</option>
                 </select>
             </div>
-            <div class="input-group col-xs-3">
+            <div class="input-group col-xs-3 form_up">
                 <span class="input-group-addon">Technická kvalita</span>
                 <select name="review[tech_kvalita]" class="form-control" required>
                     <option disabled selected value> - Vyber možnost - </option>
@@ -49,7 +49,7 @@
                     <option value="5">5 = bídná</option>
                 </select>
             </div>
-            <div class="input-group col-xs-3">
+            <div class="input-group col-xs-3 form_up">
                 <span class="input-group-addon">Jazyková kvalita</span>
                 <select name="review[jazyk_kvalita]" class="form-control" required>
                     <option disabled selected value> - Vyber možnost - </option>
@@ -60,7 +60,7 @@
                     <option value="5">5 = bídná</option>
                 </select>
             </div>
-            <div class="input-group col-xs-3">
+            <div class="input-group col-xs-3 form_up">
                 <span class="input-group-addon">Doporučení</span>
                 <select name="review[doporuceni]" class="form-control" required>
                     <option disabled selected value> - Vyber možnost - </option>
@@ -71,12 +71,14 @@
                     <option value="5">5 = Nepřijmout</option>
                 </select>
             </div>
-            <div class="input-group col-xs-8 ">
+            <div class="input-group col-xs-8 form_up">
                 <span class="input-group-addon">Poznámka</span>
                 <textarea class="form-control" rows="8" name="review[poznamka]"></textarea>
             </div>
+            <div class="form_up">
+                <input type="submit" class="btn btn-success" value="Ohodnotit článek" id="login-btn">
+            </div>
 
-            <input type="submit" class="btn btn-success" value="Ohodnotit článek" id="login-btn">
         </form>
     </div>
 {% endblock %}

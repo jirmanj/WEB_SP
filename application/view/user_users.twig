@@ -2,7 +2,7 @@
 
 {% block information %}
     <h2>Správa uživatelů</h2>
-    <p>Nachazíte se ve správě uživatelů.</p>
+    <p class="info_up">Nachazíte se ve správě uživatelů.</p>
 {% endblock %}
 
 
@@ -12,12 +12,11 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="col-md-3 text-center">Jméno</th>
-                        <th class="col-md-3 text-center">Příjmeni</th>
-                        <th class="col-md-3 text-center">Hodnost</th>
+                        <th class="col-md-1 text-center">Jméno</th>
+                        <th class="col-md-1 text-center">Příjmeni</th>
+                        <th class="col-md-1 text-center">Hodnost</th>
                         <th class="col-md-1 text-center">Upravit hodnost</th>
                         <th class="col-md-1 text-center">Vymazat uživatele</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +37,10 @@
                         <td class ="text-center">
                             <form class="form-inline" action="{{ makeURL("user","editUser",value.id_uzivatel) }}" method="POST">
                                 {% for value in arr %}
-                                    <input type="radio" name="radio" value="{{ value }}">{{ value }}
+                                    <div class="form_inline_up">
+                                        <input type="radio" name="radio"  value="{{ value }}">{{ value }}
+                                    </div>
+
                                 {% endfor %}
                                 <input type="submit" class="btn btn-success" value="Upravit hodnost" id="login-btn">
                             </form>

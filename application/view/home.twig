@@ -2,7 +2,7 @@
 
 {% block information %}
      <h1>KONFERENČNÍ SYSTÉM</h1>
-      <p>Vítejte na stránce českého konferenčního systému, který je tu již s vámi 10 let.</p>
+      <p class="info_up">Vítejte na stránce českého konferenčního systému, který je tu již s vámi 10 let.</p>
 {% endblock %} 
  
 
@@ -15,10 +15,10 @@
                 {% for value in articles %}
                     <div class="col-md-4">
                         <h2>{{ value.nazev }}</h2>
-                        <p>{{ value.ukazka }} </p>
-                        <p><strong>Autor: </strong>{{ value.autor }}</p>
-                        <p><strong>Hodnocení: </strong>{{ value.posouzeno }}</p>
-                        <p><a class="btn btn-default" href="{{ makeURL("home","article",value.id_prispevky) }}" role="button">Více &raquo;</a></p>
+                        <p>{{ value.ukazka }} </p><hr>
+                        <p><strong class="info_up">Autor: </strong>{{ value.autor }}</p>
+                        <p><strong class="info_up">Hodnocení: </strong>{{ value.posouzeno }}</p>
+                        <p><a class="btn btn-default btn_vice" href="{{ makeURL("home","article",value.id_prispevky) }}" role="button">Více &raquo;</a></p>
                     </div>
 
                 {% endfor %}
